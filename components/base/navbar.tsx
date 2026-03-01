@@ -31,7 +31,7 @@ function Navbar() {
       <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <div className="relative h-10 w-34">
+        <div className="relative h-10 w-[136px]">
           <Link href={'/'}>
             <Image src="/logos/svg.png" alt="logo" fill className="object-contain" />
           </Link>

@@ -1,9 +1,8 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+'use client'
+import React, { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { testimonies } from '@/lib/constants/landing';
-import { useGsapFadeUp , useGsapFadeRight} from '@/hooks/useGsapAnimation';
+import { useGsapFadeUp, useGsapFadeRight } from '@/hooks/useGsapAnimation';
 export default function TestimoniesSection() {
   const titleRef = useGsapFadeUp();
   const cardRef = useGsapFadeRight({ delay: 0.2 });
@@ -12,7 +11,7 @@ export default function TestimoniesSection() {
   const [animating, setAnimating] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('left');
 
-  const goTo = (index: number) => {
+  const goTo = useCallback((index: number) => {
     if (index === activeIndex || animating) return;
     setDirection(index > activeIndex ? 'left' : 'right');
     setAnimating(true);
@@ -20,7 +19,7 @@ export default function TestimoniesSection() {
       setActiveIndex(index);
       setAnimating(false);
     }, 300);
-  };
+  }, [activeIndex, animating]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -28,7 +27,7 @@ export default function TestimoniesSection() {
       goTo(next);
     }, 4000);
     return () => clearInterval(timer);
-  }, [activeIndex]);
+  }, [activeIndex, goTo]);
 
   const item = testimonies.items[activeIndex];
 
@@ -46,10 +45,10 @@ export default function TestimoniesSection() {
         <div ref={cardRef} className="overflow-hidden">
           <div
             className={`transition-all duration-300 ease-in-out ${animating
-                ? direction === 'left'
-                  ? '-translate-x-8 opacity-0'
-                  : 'translate-x-8 opacity-0'
-                : 'translate-x-0 opacity-100'
+              ? direction === 'left'
+                ? '-translate-x-8 opacity-0'
+                : 'translate-x-8 opacity-0'
+              : 'translate-x-0 opacity-100'
               }`}
           >
             <div className="bg-white rounded-3xl border border-gray-200 p-6 shadow-sm">
@@ -93,8 +92,8 @@ export default function TestimoniesSection() {
                 key={index}
                 onClick={() => goTo(index)}
                 className={`transition-all duration-300 rounded-full h-2 ${index === activeIndex
-                    ? 'w-8 bg-[#16A34A]'
-                    : 'w-2 bg-gray-300 hover:bg-gray-400'
+                  ? 'w-8 bg-[#16A34A]'
+                  : 'w-2 bg-gray-300 hover:bg-gray-400'
                   }`}
               />
             ))}

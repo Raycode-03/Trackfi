@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import React, { FormEvent } from 'react';
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
   CardContent,
@@ -121,7 +122,7 @@ export function SignUpForm() {
               className="w-full bg-blue-600" 
               disabled={isDisabled}
             >
-              {isLoading ? "Loading..." : SignupContent.button}
+              {isLoading ?( <Image  src="/logos/Spinner.svg"  alt="Loading animation"   width={100} height={100} priority /> ) : SignupContent.button}
             </Button>
 
             <Separator className="my-2 bg-gray-200" />

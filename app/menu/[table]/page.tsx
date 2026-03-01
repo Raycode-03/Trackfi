@@ -8,13 +8,13 @@ import { Button } from '@/components/ui/button';
 import { CardContent, CardFooter } from '@/components/ui/card';
 import { ShoppingCart } from 'lucide-react';
 import MediaDisplay from '@/components/menu/mediaDisplay';
-import { MenuItem } from "@/types";
+import Loading from '@/app/loading';
 interface PageProps {
   params: Promise<{ table: string }>;
 }
 type FilterType = 'all' | 'veg' | 'vegan';
 
-export default function OrderPage({ params }: PageProps) {
+export default function MenuPage({ params }: PageProps) {
   const paramsData = React.use(params);
   const tableNumber = Number(paramsData.table);
   const [sessionCreated, setSessionCreated] = useState(false);
@@ -139,15 +139,7 @@ const total = menusResponse?.total ?? 0;
   return (
     <div className="container mx-auto p-4">
       {/* Session loader */}
-      {isSessionLoading && (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4" />
-            <p className="text-gray-600">Setting up your table...</p>
-            <p className="text-sm text-gray-500 mt-2">Table {tableNumber}</p>
-          </div>
-        </div>
-      )}
+      {isSessionLoading && <Loading />}
 
       {/* Menu loader */}
        {isMenuLoading && !isSessionLoading && <BooksSkeleton />}

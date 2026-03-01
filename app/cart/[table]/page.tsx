@@ -9,6 +9,7 @@ import Link from 'next/link';
 import MediaDisplay from '@/components/menu/mediaDisplay';
 import { CartItem } from '@/types';
 import { useRouter } from 'next/navigation';
+import { CartSkeleton } from '@/components/dashboard/skeleton';
 interface PageProps {
   params: Promise<{ table: string }>;
 }
@@ -94,14 +95,8 @@ function CartPage({ params }: PageProps) {
     0
   );
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900" />
-      </div>
-    );
-  }
-
+  if (isLoading) return <CartSkeleton />;
+  
     if (error) {
   // if session expired, show nothing — useEffect is handling the redirect
   if (error instanceof Error && error.message === 'Session expired') {
@@ -127,8 +122,8 @@ function CartPage({ params }: PageProps) {
         <ShoppingBag className="w-16 h-16 text-gray-300" />
         <h2 className="text-xl font-semibold text-gray-600">Your cart is empty</h2>
         <p className="text-sm text-gray-400">Add items from the menu to get started</p>
-        <Link href={`/menu/${tableNumber}`}>
-          <Button>Browse Menu</Button>
+        <Link href={`/menu/${tableNumber}`} >
+          <Button className='bg-[#16A34A] hover:bg-[#15803D]'>Browse Menu</Button>
         </Link>
       </div>
     );

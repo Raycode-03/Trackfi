@@ -29,4 +29,4 @@ export type {
 } from './menu'
 
 export type { CartItem } from './cart';
-export type {Order , OrderItem , CheckoutResponse} from './order';
+export type * from './order';

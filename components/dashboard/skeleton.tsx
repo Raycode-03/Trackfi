@@ -184,3 +184,87 @@ export function BooksSkeleton({ count = 8 }: { count?: number }) {
     </div>
   )
 }
+export function OrderCardSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div className="min-h-[calc(100vh-80px)] container mx-auto max-w-2xl px-4 py-6">
+      <div className="h-8 w-32 mb-6 bg-gray-300 rounded animate-pulse" />
+      <div className="flex flex-col gap-4">
+        {Array.from({ length: count }).map((_, index) => (
+          <div
+            key={index}
+            className="rounded-2xl border border-gray-200 bg-gray-50 p-4 space-y-3 animate-pulse"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-gray-300" />
+                <div className="h-4 w-16 bg-gray-300 rounded" />
+              </div>
+              <div className="h-4 w-20 bg-gray-300 rounded" />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="flex justify-between">
+                <div className="h-4 w-32 bg-gray-300 rounded" />
+                <div className="h-4 w-16 bg-gray-300 rounded" />
+              </div>
+              <div className="flex justify-between">
+                <div className="h-4 w-24 bg-gray-300 rounded" />
+                <div className="h-4 w-16 bg-gray-300 rounded" />
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-2 border-t border-black/5">
+              <div className="h-3 w-12 bg-gray-300 rounded" />
+              <div className="h-4 w-20 bg-gray-300 rounded" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+export function CartSkeleton() {
+  return (
+    <div className="container mx-auto max-w-2xl px-4 py-6 pb-40">
+      <div className="h-8 w-28 mb-6 bg-gray-300 rounded animate-pulse" />
+      <div className="flex flex-col gap-4">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div
+            key={index}
+            className="flex items-center gap-4 bg-white rounded-2xl border p-4 shadow-sm animate-pulse"
+          >
+            <div className="h-16 w-16 rounded-xl shrink-0 bg-gray-300" />
+
+            <div className="flex-1 min-w-0 space-y-2">
+              <div className="h-4 w-32 bg-gray-300 rounded" />
+              <div className="h-4 w-20 bg-gray-300 rounded" />
+              <div className="h-3 w-16 bg-gray-300 rounded" />
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gray-300" />
+              <div className="w-6 h-4 bg-gray-300 rounded" />
+              <div className="w-8 h-8 rounded-full bg-gray-300" />
+              <div className="w-8 h-8 rounded-full bg-gray-300" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-xl p-4 z-50">
+        <div className="max-w-2xl mx-auto space-y-3 animate-pulse">
+          <div className="flex justify-between">
+            <div className="h-4 w-16 bg-gray-300 rounded" />
+            <div className="h-4 w-20 bg-gray-300 rounded" />
+          </div>
+          <div className="flex justify-between">
+            <div className="h-5 w-12 bg-gray-300 rounded" />
+            <div className="h-5 w-24 bg-gray-300 rounded" />
+          </div>
+          <div className="h-12 w-full bg-gray-300 rounded-xl" />
+        </div>
+      </div>
+    </div>
+  );
+}

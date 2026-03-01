@@ -84,7 +84,7 @@ export default function TablesPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <Image  src="/images/loading-animation.gif"   alt="Loading animation"   width={100} height={100} priority />
+          <Image  src="/logos/Spinner.svg"  alt="Loading animation"   width={100} height={100} priority />
           <p className="text-gray-600">Loading tables...</p>
         </div>
       </div>

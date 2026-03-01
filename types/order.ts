@@ -1,4 +1,3 @@
-// types/index.ts - keep types only here, remove from api file
 export interface Order {
   id: string;
   table_session_id: string;
@@ -11,13 +10,12 @@ export interface Order {
 
 export interface OrderItem {
   id: string;
-  order_id: string;
-  menu_item_id: string;
   quantity: number;
   price: number;
-  created_at: string;
-  updated_at: string;
+  menu_items: { id: string; name: string; image_url: string } | { id: string; name: string; image_url: string }[] | null;
 }
+
+export type OrderWithItems = Order & { order_items: OrderItem[] };
 
 export interface CheckoutResponse {
   url: string;

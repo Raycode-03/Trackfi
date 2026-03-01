@@ -1,5 +1,5 @@
 // lib/api/orders.ts
-import { CheckoutResponse, Order } from "@/types";
+import { CheckoutResponse, Order, OrderWithItems } from "@/types";
 
 export const orderApi = {
   createCheckout: async (tableNumber: number): Promise<CheckoutResponse> => {
@@ -21,4 +21,11 @@ export const orderApi = {
     if (!res.ok) throw new Error('Failed to place order');
     return res.json();
   },
+  getOrders: async (): Promise<OrderWithItems[]> => {
+    const res = await fetch('/api/users/orders');
+    if (res.status === 401) throw new Error('Session expired');
+    if (!res.ok) throw new Error('Failed to fetch orders');
+    const data = await res.json();
+    return data.orders;
+  }
 };

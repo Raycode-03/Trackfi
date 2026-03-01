@@ -56,34 +56,41 @@ export async function POST(req: Request) {
     }
 
     const lineItems = (cartItems as CartItemRow[]).map((item) => {
-      const menu = Array.isArray(item.menu_items)
-        ? item.menu_items[0]
-        : item.menu_items;
+  const menu = Array.isArray(item.menu_items)
+    ? item.menu_items[0]
+    : item.menu_items;
 
-      return {
-        price_data: {
-          currency: 'ngn',
-          product_data: {
-            name: menu?.name ?? 'Menu Item',
-            ...(menu?.image_url && { images: [menu.image_url] }),
-          },
-          unit_amount: (menu?.price ?? 0) * 100,
-        },
-        quantity: item.quantity,
-      };
-    });
+  // Use menu image if exists, otherwise a default placeholder
+  const imageUrl = menu?.image_url?.trim() || `${process.env.NEXT_PUBLIC_APP_URL}/images/default_placeholder.png`;
 
+return {
+  price_data: {
+    currency: 'ngn',
+    product_data: {
+      name: menu?.name ?? 'Menu Item',
+      ...(imageUrl && { images: [imageUrl] }),
+    },
+    unit_amount: (menu?.price ?? 0) * 100,
+  },
+  quantity: item.quantity,
+};
+});
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/menu/${tableNumber}/order-success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/menu/${tableNumber}/cart`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/orders/${tableNumber}/order_success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cart/${tableNumber}/`,
       metadata: {
         tableSessionId: session.id,
         tableNumber: String(tableNumber),
       },
     });
+     // 2. Clear the cart
+  await supabase
+    .from('cart_items')
+    .delete()
+    .eq('table_session_id', session.id);
 
     return NextResponse.json({ url: checkoutSession.url });
 

@@ -3,10 +3,11 @@ import { CartItem } from "@/types";
 export const cartApi = {
   getCart: async (): Promise<CartItem[]> => {
     const res = await fetch('/api/users/cart');
-    if (!res.ok) throw new Error('Failed to fetch cart');
     if (res.status === 401) {
       throw new Error('Session expired'); 
     }
+    if (!res.ok) throw new Error('Failed to fetch cart');
+    
     const data = await res.json();
     return data.items;
   },
