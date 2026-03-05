@@ -10,11 +10,11 @@ import { AdminOrdersSkeleton } from '@/components/common/skeleton';
 import { ShoppingBag } from 'lucide-react';
 
 const STATUS_CONFIG = {
-  pending:   { label: 'Pending',   badge: 'bg-amber-100 text-amber-700',    dot: 'bg-amber-400' },
-  preparing: { label: 'Preparing', badge: 'bg-blue-100 text-blue-700',      dot: 'bg-blue-400 animate-pulse' },
-  ready:     { label: 'Ready',     badge: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-400 animate-pulse' },
-  completed: { label: 'Completed', badge: 'bg-gray-100 text-gray-500',      dot: 'bg-gray-300' },
-  cancelled: { label: 'Cancelled', badge: 'bg-red-100 text-red-500',        dot: 'bg-red-300' },
+  pending: { label: 'Pending', badge: 'bg-amber-100 text-amber-700', dot: 'bg-amber-400' },
+  preparing: { label: 'Preparing', badge: 'bg-blue-100 text-blue-700', dot: 'bg-blue-400 animate-pulse' },
+  ready: { label: 'Ready', badge: 'bg-emerald-100 text-emerald-700', dot: 'bg-emerald-400 animate-pulse' },
+  completed: { label: 'Completed', badge: 'bg-gray-100 text-gray-500', dot: 'bg-gray-300' },
+  cancelled: { label: 'Cancelled', badge: 'bg-red-100 text-red-500', dot: 'bg-red-300' },
 };
 
 function EmptyOrders() {
@@ -138,7 +138,13 @@ export default function AdminOrders() {
                             Table {tableNumber}
                           </p>
                           <p className="text-xs text-gray-400">
-                            {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {new Date(order.created_at).toLocaleString([], {
+                              month: 'short',
+                              day: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              hour12: true // Optional: change to false for 24h format
+                            })}
                           </p>
                         </div>
                       </td>
