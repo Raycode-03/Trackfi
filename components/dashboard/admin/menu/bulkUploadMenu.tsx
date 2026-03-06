@@ -88,8 +88,6 @@ export default function BulkUploadMenu() {
         description: row.description || '',
         price: parseFloat(row.price) || 0,
         category: row.category,
-        image_url: row.image_url || '',
-        video_url: row.video_url || '',
         is_veg: row.is_veg === 'true',
         is_vegan: row.is_vegan === 'true',
         is_available: row.is_available !== 'false'
@@ -123,8 +121,6 @@ export default function BulkUploadMenu() {
       description: item.description || '',
       price: item.price,
       category: item.category,
-      image_url: item.image_url || '',
-      video_url: item.video_url || '',
       is_veg: item.is_veg,
       is_vegan: item.is_vegan,
       is_available: item.is_available
@@ -140,12 +136,12 @@ export default function BulkUploadMenu() {
   };
 
   const downloadTemplate = () => {
-    const template = `name,description,price,category,image_url,video_url,is_veg,is_vegan,is_available
-Jollof Rice,Spicy Nigerian jollof rice with chicken,2500,Main Course,,,false,false,true
-Fried Rice,Fried rice with vegetables and shrimp,2000,Main Course,,,false,false,true
-Suya,Grilled spicy meat skewers,1500,Appetizer,,,false,false,true
-Pounded Yam,Fresh pounded yam with egusi soup,3000,Main Course,,,false,false,true
-Chapman,Refreshing fruit cocktail,800,Beverages,,,true,true,true`;
+    const template = `name,description,price,category,is_veg,is_vegan,is_available
+Jollof Rice,Spicy Nigerian jollof rice with chicken,2500,Main Course,false,false,true
+Fried Rice,Fried rice with vegetables and shrimp,2000,Main Course,false,false,true
+Suya,Grilled spicy meat skewers,1500,Appetizer,false,false,true
+Pounded Yam,Fresh pounded yam with egusi soup,3000,Main Course,false,false,true
+Chapman,Refreshing fruit cocktail,800,Beverages,true,true,true`;
 
     const blob = new Blob([template], { type: 'text/csv' });
     const url = window.URL.createObjectURL(blob);
@@ -184,10 +180,10 @@ Chapman,Refreshing fruit cocktail,800,Beverages,,,true,true,true`;
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <h3 className="font-semibold text-yellow-900 mb-2">📋 Instructions:</h3>
             <ol className="list-decimal list-inside text-sm text-yellow-800 space-y-1">
-              <li>Download the Excel template below</li>
-              <li>Fill in your menu items</li>
-              <li>Save and upload the CSV file</li>
-              <li>You can add Cloudinary image links in the Excel file, or add images later by editing each item</li>
+              <li>1. Download the Excel template below</li>
+              <li>2. Fill in menu items (no images needed here)</li>
+              <li>3. Upload CSV — items appear in your menu</li>
+              <li>4. You can add Cloudinary image links in the Excel file, or add images later by editing each item</li>
             </ol>
           </div>
 

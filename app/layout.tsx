@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import { DM_Serif_Text } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-
 const dmSerifText = DM_Serif_Text({
   weight: ["400"], // Regular weight
   style: ["normal", "italic"],
@@ -60,6 +59,7 @@ export default function RootLayout({
             className: "toast-with-progress",
           }}
         />
+        
       </body>
     </html>
   );

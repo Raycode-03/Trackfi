@@ -52,7 +52,7 @@ function CartPage({ params }: PageProps) {
       toast.loading('Removing item...', { id: 'remove-toast' });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart', tableNumber] });
       toast.success('Item removed', { id: 'remove-toast' });
     },
     onError: (error: Error) => {
@@ -68,7 +68,7 @@ function CartPage({ params }: PageProps) {
       setUpdatingId(cartItemId);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart' , tableNumber] });
     },
     onError: (error: Error) => {
       toast.error('Failed to update quantity', { description: error.message });

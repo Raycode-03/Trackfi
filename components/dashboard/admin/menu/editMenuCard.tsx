@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { X, Upload } from "lucide-react";
-
+import { toast } from "sonner";
 interface Props {
   menuitem: MenuItem;
   open: boolean;
@@ -52,9 +52,23 @@ export default function EditMenuCard({
 
     const isImage = file.type.startsWith('image/');
     const isVideo = file.type.startsWith('video/');
+    // minimum size for the  media types
+    const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
 
     if (!isImage && !isVideo) {
-      alert('Please select an image or video file');
+      toast.error('Please select an image or video file');
+      return;
+    }
+    const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+
+    if (file.size > maxSize) {
+      toast.error(
+        isVideo
+          ? 'Video must be under 50MB'
+          : 'Image must be under 2MB'
+      );
+      e.target.value = ''; // clear the input
       return;
     }
 

@@ -25,13 +25,20 @@ async function uploadMediaToCloudinary(file: File, folder: string) {
     if (!file || file.size === 0) {
       throw new Error("Invalid file provided");
     }
+    const MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
+    const MAX_VIDEO_SIZE = 50 * 1024 * 1024; // 50MB
 
     const isImage = file.type.startsWith("image/");
     const isVideo = file.type.startsWith("video/");
+    const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
 
+    // ✅ Fix — add return and fix status code
+    if (file.size > maxSize) {
+      throw new Error(isVideo ? 'Video must be under 50MB' : 'Image must be under 2MB');
+    }
     const folderPath = isImage
-  ? `${folder}/images`
-  : `${folder}/videos`;
+      ? `${folder}/images`
+      : `${folder}/videos`;
 
     if (!isImage && !isVideo) {
       throw new Error("Only image or video files are allowed");
@@ -42,7 +49,12 @@ async function uploadMediaToCloudinary(file: File, folder: string) {
     const dataUri = `data:${file.type};base64,${base64}`;
 
     const result = await cloudinary.uploader.upload(dataUri, {
-      folder:folderPath,
+      folder: folderPath,
+      transformation: [
+        { width: 800, height: 600, crop: 'fill' }, // resize
+        { quality: 'auto' },                        // compress
+        { fetch_format: 'auto' },                   // webp/avif automatically
+      ],
       resource_type: isVideo ? "video" : "image",
       timeout: isVideo ? 120_000 : 60_000,
       quality: "auto:best",
@@ -65,13 +77,13 @@ async function uploadMediaToCloudinary(file: File, folder: string) {
 
 export async function PUT(
   request: Request,
-  
+
 ) {
   try {
     const supabase = await createClient();
     const { data: { user }, error: userError } = await supabase.auth.getUser();
     if (userError || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    
+
     const formData = await request.formData();
 
     const id = formData.get("id");

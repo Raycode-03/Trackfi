@@ -44,7 +44,7 @@ export default function MenuPage({ params }: PageProps) {
       toast.loading('Adding to cart...', { id: 'cart-toast' });
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['cart', tableNumber] });
       toast.success('Added to cart!', { id: 'cart-toast' });
     },
     onError: (error: Error) => {
