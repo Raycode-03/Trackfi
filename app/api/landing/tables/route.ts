@@ -37,7 +37,7 @@ export async function GET() {
       return {
         id: table.id,
         number: table.table_number.toString().padStart(2, '0'),
-        status: activeSession ? 'occupied' : 'available',
+        status: activeSession ? 'active' : 'available',
         session: activeSession ? {
           id: activeSession.id,
           status: activeSession.status,
