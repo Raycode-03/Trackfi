@@ -1,11 +1,10 @@
 "use client"
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { Bell, LogOut, User } from "lucide-react"
+import { useSidebar } from "@/components/ui/sidebar"
+import { Bell, LogOut, User , MenuIcon} from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { toast } from 'sonner';
 import Link from "next/link";
-
+import { useSidebarStore } from "@/store/useSidebarStore"
 interface NavbarProps {
     user?: {
         id: string;
@@ -20,7 +19,14 @@ export default function NavbarDashboard({ user, pageTitle = "dashboard" }: Navba
     const { state, isMobile } = useSidebar()
     const sidebarWidth = state === "expanded" ? "16rem" : "3rem"
     const userMenuRef = useRef<HTMLDivElement>(null)
+    // In NavbarDashboard
+    const { toggle } = useSidebarStore()
+    const { toggleSidebar } = useSidebar()
 
+    const handleToggle = () => {
+        toggle()        // update Zustand (persists)
+        toggleSidebar() // update shadcn UI
+    }
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
             const target = e.target as Node;
@@ -57,7 +63,12 @@ export default function NavbarDashboard({ user, pageTitle = "dashboard" }: Navba
         >
             {/* Left */}
             <div className="flex items-center gap-4 flex-1">
-                <SidebarTrigger className="text-white hover:bg-white/10 rounded-lg p-2 transition-colors flex-shrink-0" />
+                <button
+                    onClick={handleToggle}
+                    className="text-white hover:bg-white/10 rounded-lg p-2 transition-colors"
+                >
+                    <MenuIcon className="w-5 h-5" />
+                </button>
                 <h1 className="text-xl font-bold capitalize text-white">{pageTitle}</h1>
             </div>
 

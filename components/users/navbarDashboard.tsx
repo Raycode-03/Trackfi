@@ -15,8 +15,6 @@ interface NavbarProps {
 
 export default function NavbarDashboard({ tableNumber }: NavbarProps) {
 
-  /* ---------------- CART ---------------- */
-
   const { data: cartItems } = useQuery<CartItem[]>({
     queryKey: ["cart", tableNumber],
     queryFn: () => cartApi.getCart(),
@@ -24,8 +22,6 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
   })
 
   const cartCount = cartItems?.length ?? 0
-
-  /* ---------------- ORDERS ---------------- */
 
   const { data: orders } = useQuery<OrderWithItems[]>({
     queryKey: ["orders", tableNumber],
@@ -35,8 +31,7 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
 
   const orderCount = orders?.length ?? 0
 
-  /* ---------------- MOBILE MENU ---------------- */
-
+  // mobile menu
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
@@ -63,7 +58,7 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
 
         <div className="flex items-center justify-between h-16">
 
-          {/* ---------------- LOGO ---------------- */}
+          {/*  LOGO */}
 
           <Link href="/" className="flex-shrink-0">
             <Image
@@ -76,7 +71,7 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
             />
           </Link>
 
-          {/* ---------------- DESKTOP NAV ---------------- */}
+          {/*  DESKTOP NAV */}
 
           <div className="hidden sm:flex items-center gap-4">
 
@@ -129,7 +124,7 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
 
           </div>
 
-          {/* ---------------- MOBILE SECTION ---------------- */}
+          {/* MOBILE MENU  */}
 
           <div className="flex items-center gap-3 sm:hidden">
 
@@ -163,7 +158,7 @@ export default function NavbarDashboard({ tableNumber }: NavbarProps) {
 
       </div>
 
-      {/* ---------------- MOBILE DROPDOWN ---------------- */}
+      {/*  MOBILE DROPDOWN */}
 
       {menuOpen && (
         <div

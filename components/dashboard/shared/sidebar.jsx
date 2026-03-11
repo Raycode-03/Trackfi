@@ -1,5 +1,5 @@
 "use client";
-
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -30,7 +30,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-
+import { useSidebarStore } from "@/store/useSidebarStore";
 // -------------------- MENUS --------------------
 
 export const adminItems = [
@@ -62,8 +62,13 @@ export const userItems = [
 // -------------------- SIDEBAR --------------------
 
 export function AppSidebar({ userRole }) {
-  const { state } = useSidebar();
-  const isCollapsed = state === "collapsed";
+  const { isOpen } = useSidebarStore()
+  const { setOpen } = useSidebar();
+
+  // Sync shadcn with Zustand
+  useEffect(() => {
+    setOpen(isOpen)
+  }, [isOpen])
 
   const menuItems =
     userRole === "admin"
@@ -79,8 +84,8 @@ export function AppSidebar({ userRole }) {
   bg-[#16A34A]/90 dark:bg-[#16A33D]/95 border-r border-white/10"
     >
       {/* ---------- HEADER ---------- */}
-      <div className={`flex items-center ${isCollapsed ? 'pt-10' : 'p-0'}`}>
-        {!isCollapsed && (
+      <div className={`flex  items-center justify-center ${!isOpen ? 'pt-10' : 'p-0'}`}>
+        {isOpen && (
           <Link href="/">
             <Image
               src="/logos/savory_icon.png"
@@ -96,7 +101,7 @@ export function AppSidebar({ userRole }) {
       {/* ---------- NAVIGATION ---------- */}
       <SidebarContent className="flex-1">
         <SidebarGroup>
-          {!isCollapsed && (
+          {isOpen && (
             <SidebarGroupLabel className="text-xs font-semibold text-white/70 uppercase tracking-wider px-3">
               Navigation
             </SidebarGroupLabel>
@@ -115,11 +120,11 @@ export function AppSidebar({ userRole }) {
                             className={`group flex items-center gap-3 p-3 rounded-lg
                             text-white transition-colors
                             hover:bg-white/10
-                            ${isCollapsed ? "justify-center" : ""}`}
+                            ${!isOpen ? "justify-center" : ""}`}
                           >
                             <item.icon size={20} className="text-white" />
 
-                            {!isCollapsed && (
+                            {isOpen && (
                               <span className="font-medium">
                                 {item.title}
                               </span>
@@ -128,7 +133,7 @@ export function AppSidebar({ userRole }) {
                         </SidebarMenuButton>
                       </TooltipTrigger>
 
-                      {isCollapsed && (
+                      {!isOpen && (
                         <TooltipContent side="right" className="text-sm">
                           {item.title}
                         </TooltipContent>

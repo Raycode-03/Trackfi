@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+
 type CardConfig<T extends string> = {
   key: T;
   title: string;
@@ -22,7 +23,7 @@ export function DashboardShell<T extends string>({
   subtitle,
   cards,
   sections,
-  
+
 }: DashboardShellProps<T>) {
   const [activeSection, setActiveSection] = useState<T>(cards[0].key);
 
@@ -38,7 +39,7 @@ export function DashboardShell<T extends string>({
       {/* Cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-6">
         {cards.map(card => (
-          <div
+          <button
             key={card.key}
             onClick={() => setActiveSection(card.key)}
             className={`p-6 rounded-xl border cursor-pointer transition hover:ring-4 hover:ring-blue-300
@@ -57,7 +58,7 @@ export function DashboardShell<T extends string>({
                 </span>
               )}
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
