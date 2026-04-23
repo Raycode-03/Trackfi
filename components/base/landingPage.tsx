@@ -1,3 +1,4 @@
+import Navbar from "./navbar";
 import { HeroSection } from "@/components/base/heroSection";
 import { FeaturesSection } from "@/components/base/featuresSection";
 import { MarketCoverageSection } from "@/components/base/marketCoverageSection";
@@ -13,19 +14,28 @@ import { FooterSection } from "@/components/base/footerSection";
 
 export default function LandingPage() {
   return (
-    <main className="bg-[#0a0a0a]">
-      <HeroSection />
-      <FeaturesSection />
-      <MarketCoverageSection />
-      <AlertsSection />
-      <PortfolioSection />
-      <StepsSection />
-      <StatsSection />
-      <TestimonialsSection />
-      <PricingSection />
-      <FAQSection />
-      <CTASection />
-      <FooterSection />
-    </main>
+    <>
+      <Navbar isLanding={true} />
+      <main className="bg-[#0a0a0a]">
+        <HeroSection />
+        <section id="features">
+          <FeaturesSection />
+        </section>
+        {/* <MarketCoverageSection />
+        <AlertsSection />
+        <PortfolioSection /> */}
+        <StepsSection />
+        <StatsSection />
+        <TestimonialsSection />
+        <section id="pricing">
+          <PricingSection />
+        </section>
+        <section id="faq">
+          <FAQSection />
+        </section>
+        <CTASection />
+        <FooterSection />
+      </main>
+    </>
   );
 }

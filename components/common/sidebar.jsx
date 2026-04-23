@@ -10,41 +10,26 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {
-  LayoutDashboard,
-  Star,
-  Globe,
-  ArrowLeftRight,
-  BellRing,
-  Settings,
   HelpCircle,
   LogOut,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useSidebarStore } from "@/store/useSidebarStore";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import Image from "next/image";
 import MediaDisplay from "@/components/common/mediaDisplay";
-const userItems = [
-  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
-   { title: "Markets",      url: "/markets",      icon: Globe },
-  { title: "Watchlist", url: "/watchlist", icon: Star },
-  { title: "Transactions", url: "/transactions", icon: ArrowLeftRight },
-  { title: "Alerts", url: "/alerts", icon: BellRing },
-  { title: "Settings", url: "/settings", icon: Settings },
-];
+import { userItems } from "@/lib/constants/sidebar";
 
-export function AppSidebar({user}) {
+
+export function AppSidebar({ user }) {
   const { isOpen } = useSidebarStore();
   const { setOpen } = useSidebar();
   const isMobile = useIsMobile();
   const showText = isMobile ? true : isOpen;
+  const shortDisplayName =
+  user?.name?.length > 12
+    ? `${user?.name.slice(0, 12)}...`
+    : user?.name;
 
   useEffect(() => {
     setOpen(isOpen);
@@ -67,7 +52,7 @@ export function AppSidebar({user}) {
   return (
     <Sidebar
       collapsible="icon"
-      className="h-screen bg-[#131313] border-r border-white/10 flex flex-col"
+      className="h-screen bg-[#131313] border-r border-white/5 flex flex-col"
     >
       {/* LOGO */}
       <div
@@ -135,14 +120,14 @@ export function AppSidebar({user}) {
         >
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full flex items-center justify-center shrink-0 p-2">
-                  <MediaDisplay image_url={user.image} name={user.name} />
+                  <MediaDisplay image_url={user.image} name={user?.name ||  user?.email.split("@")[0]} />
             </div>
             {showText && (
               <div>
                 <p className="text-sm text-white font-medium leading-none">
-                  {user.name.toUpperCase()}
+                  {shortDisplayName?.toUpperCase() || user?.email.split("@")[0].toUpperCase()}
                 </p>
-                <p className="text-xs text-gray-500 mt-0.5">{user.packageType} Package</p>
+                <p className="text-xs text-gray-500 mt-0.5">{user.package_type.charAt(0).toUpperCase() + user.package_type.slice(1)} Plan</p>
               </div>
             )}
           </div>

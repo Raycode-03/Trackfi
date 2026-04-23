@@ -1,10 +1,9 @@
-"use client";
-import React, { useState } from "react";
+"use client"
+import React, { useCallback, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import Link from "next/link";
 import { CoinDetail, TimeRange } from "@/types/markets";
-import { PriceChart } from "../common/priceChart";
-import { formatDate } from "@/lib/helpers/formatDate";
+import { CandlestickChart } from "../common/CandleStickChart";
 import { SetAlertModal } from "../shared/modals/setAlertModal";
 import { CoinNotAvailable } from "./sections/coinNotAvailable";
 import { CoinDetailHeader } from "./sections/coinDetailHeader";
@@ -12,23 +11,22 @@ import { CoinStatsGrid } from "./sections/coinStatsGrid";
 
 interface Props {
   coin?: CoinDetail;
+  id: string;
 }
 
-export default function CoinDetailView({ coin }: Props) {
+export default function CoinDetailView({ coin, id }: Props) {
   const [range, setRange] = useState<TimeRange>("1M");
   const [isWatchlisted, setIsWatchlisted] = useState(false);
   const [showAlertModal, setShowAlertModal] = useState(false);
 
-  if (!coin) {
-    return <CoinNotAvailable />;
-  }
+  const handleRangeChange = useCallback((newRange: TimeRange) => {
+    setRange(newRange);
+  }, []);
 
-  const isPositive = coin.price_change_percentage_24h >= 0;
-  const chartPoints = coin.chartData[range];
+  if (!coin) return <CoinNotAvailable />;
 
   return (
     <div className="pt-24 px-6 pb-10 min-h-screen text-white">
-      {/* Back */}
       <Link
         href="/markets"
         className="flex items-center gap-1.5 text-white/40 hover:text-white text-sm mb-6 transition-colors w-fit"
@@ -37,7 +35,6 @@ export default function CoinDetailView({ coin }: Props) {
         Back to Markets
       </Link>
 
-      {/* Header */}
       <CoinDetailHeader
         coin={coin}
         isWatchlisted={isWatchlisted}
@@ -45,7 +42,6 @@ export default function CoinDetailView({ coin }: Props) {
         onOpenAlert={() => setShowAlertModal(true)}
       />
 
-      {/* Chart */}
       <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-base font-semibold text-white/80">Price Chart</h2>
@@ -53,7 +49,7 @@ export default function CoinDetailView({ coin }: Props) {
             {(["1D", "1W", "1M", "1Y"] as TimeRange[]).map((t) => (
               <button
                 key={t}
-                onClick={() => setRange(t)}
+                onClick={() => handleRangeChange(t)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   range === t
                     ? "bg-primary text-black"
@@ -66,20 +62,12 @@ export default function CoinDetailView({ coin }: Props) {
           </div>
         </div>
 
-        <div className="h-72 w-full md:w-[99%]">
-          <PriceChart
-            labels={chartPoints.map((d) => formatDate(d.date, range))}
-            values={chartPoints.map((d) => d.value)}
-            color={isPositive ? "#4ade80" : "#f97066"}
-            height="h-72"
-          />
-        </div>
+        {/* Chart owns its own loading/fetching/pagination */}
+        <CandlestickChart id={id} range={range} />
       </div>
 
-      {/* Stats Grid */}
       <CoinStatsGrid coin={coin} />
 
-      {/* Description */}
       {coin.description && (
         <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
           <h2 className="text-base font-semibold mb-3">About {coin.name}</h2>
@@ -89,10 +77,10 @@ export default function CoinDetailView({ coin }: Props) {
         </div>
       )}
 
-      {/* Set Alert Modal */}
       {showAlertModal && (
         <SetAlertModal
           coinSymbol={coin.symbol}
+          coinPrice={coin.current_price}
           onClose={() => setShowAlertModal(false)}
           onCreate={(type, value) => {
             console.log(`Alert created: ${type} ${value}`);

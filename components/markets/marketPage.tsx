@@ -4,12 +4,18 @@ import CoinTable from "@/components/common/coinTable";
 import { MarketsSkeleton } from "@/components/common/skeleton";
 import { useMarkets } from "@/lib/query/index";
 import { SetAlertModal } from "../shared/modals/setAlertModal";
-import { toggleMarketAlert } from "@/lib/api";
 import { toast } from "sonner";
-import { AlertCondition } from "@/types";
+import { AlertCondition, WatchlistCoin } from "@/types";
+import { toggleWatchlistStar, toggleWatchlistAlert } from "@/lib/api";
 function MarketPage() {
-  const { data: coins = [], isLoading, isError } = useMarkets();
-  const [coinList, setCoinList] = useState(coins);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+
+  const { data, isLoading, isError } = useMarkets(page, search);
+  const coins = data?.coins ?? [];
+  const total = data?.total ?? 0;
+  const totalPages = Math.ceil(total / 20);
+  const [coinList, setCoinList] = useState<WatchlistCoin[]>(coins);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [selectedCoinId, setSelectedCoinId] = useState<string | null>(null);
   useEffect(() => {
@@ -19,15 +25,35 @@ function MarketPage() {
   }, [isError]);
 
   useEffect(() => {
-    setCoinList(coins);
+    if (coins.length > 0) {
+      setCoinList(coins);
+    }
   }, [coins]);
-
-  const toggleStar = (id: string) =>
+  const toggleStar = (id: string) => {
+    const coin = coinList.find((c) => c.id === id);
+    if (!coin) return;
+    const newState = !coin.isWatchlisted;
     setCoinList((prev) =>
       prev.map((c) =>
         c.id === id ? { ...c, isWatchlisted: !c.isWatchlisted } : c,
       ),
     );
+    toast.success(newState ? "Added to watchlist" : "Removed from watchlist");
+    toggleWatchlistStar(
+      id,
+      !coin.isWatchlisted,
+      coin.name,
+      coin.symbol,
+      coin.image ?? "",
+    ).catch(() => {
+      toast.error("Failed to update watchlist.");
+      setCoinList((prev) =>
+        prev.map((c) =>
+          c.id === id ? { ...c, isWatchlisted: coin.isWatchlisted } : c,
+        ),
+      );
+    });
+  };
 
   const toggleAlert = (id: string) => {
     setSelectedCoinId(id);
@@ -35,21 +61,27 @@ function MarketPage() {
   };
 
   const handleAlertCreate = (type: AlertCondition, value: number) => {
-    if (selectedCoinId) {
+    if (!selectedCoinId) return;
+    const coin = coinList.find((c) => c.id === selectedCoinId);
+    setCoinList((prev) =>
+      prev.map((c) => (c.id === selectedCoinId ? { ...c, hasAlert: true } : c)),
+    );
+    toast.success(`Alert set for ${coin?.symbol}`);
+    toggleWatchlistAlert(selectedCoinId, {
+      type: type === "change" ? "percentage" : "price",
+      value,
+    }).catch(() => {
+      toast.error("Failed to create alert.");
       setCoinList((prev) =>
         prev.map((c) =>
-          c.id === selectedCoinId ? { ...c, hasAlert: true } : c,
+          c.id === selectedCoinId ? { ...c, hasAlert: false } : c,
         ),
       );
-      toggleMarketAlert(selectedCoinId, {
-        type: type === "change" ? "percentage" : "price",
-        value,
-      });
-    }
+    });
   };
 
   if (isLoading) return <MarketsSkeleton />;
-
+  const selectedCoin = coinList.find((c) => c.id === selectedCoinId);
   return (
     <div className="pt-24 px-6 pb-10 min-h-screen text-white">
       <div className="mb-8">
@@ -65,13 +97,21 @@ function MarketPage() {
         onToggleStar={toggleStar}
         onToggleAlert={toggleAlert}
         showExport={false}
+        isServerPaginated={true}
+        page={page}
+        total={total}
+        limit={20}
+        onPageChange={setPage}
+        onSearch={(val) => {
+          setSearch(val);
+          setPage(1);
+        }}
       />
 
-      {showAlertModal && selectedCoinId && (
+      {showAlertModal && selectedCoin && (
         <SetAlertModal
-          coinSymbol={
-            coinList.find((c) => c.id === selectedCoinId)?.symbol || ""
-          }
+          coinSymbol={selectedCoin.symbol}
+          coinPrice={selectedCoin.current_price}
           onClose={() => {
             setShowAlertModal(false);
             setSelectedCoinId(null);

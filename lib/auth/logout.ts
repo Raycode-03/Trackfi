@@ -10,14 +10,14 @@ export function useLogout() {
     const toastId = toast.loading("Logging out...");
 
     try {
-      const response = await fetch('/api/admin/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
       });
 
       if (response.ok) {
         toast.success("Logged out successfully!", { id: toastId });
         setTimeout(() => {
-          router.push('/admin/login');
+          router.push('/login');
         }, 1000);
       } else {
         toast.error("Failed to logout. Please try again.", { id: toastId });

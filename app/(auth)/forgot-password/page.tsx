@@ -98,7 +98,7 @@ export default function Page() {
             />
           </div>
           <CardFooter className="mt-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full bg-black hover:bg-gray-900" disabled={loading}>
               {loading ? "Verifying..." : cfg.emailButton}
             </Button>
           </CardFooter>
@@ -110,7 +110,7 @@ export default function Page() {
       <CardFooter>
         <p className="text-sm text-gray-500 mt-2">
           <Link href={cfg.linkHref}>
-            <Button variant="link" type="button" className="p-0 h-auto">
+            <Button variant="secondary" type="button" className="p-0 h-auto">
               {cfg.linkButton}
             </Button>
           </Link>

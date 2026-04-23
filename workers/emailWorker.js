@@ -30,17 +30,17 @@ const worker = new Worker(
 
     try {
       const { data, error } = await resend.emails.send({
-        from: "Savory & Co <onboarding@resend.dev>", // Use resend.dev for testing
+        from: "Trackfi <onboarding@resend.dev>", // Use resend.dev for testing
         to: email,
-        subject: "Welcome to Savory & 🍽️",
+        subject: "Welcome to Trackfi! 🎉",
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h1 style="color: #111;">Welcome to Savory & Co! 🍽️</h1>
+            <h1 style="color: #111;">Welcome to Trackfi! 🎉</h1>
             <p>Hi ${name || "there"} 👋</p>
-            <p>Thank you for signing up with <strong>Savory & Co</strong> 🍔🍕</p>
+            <p>Thank you for signing up with <strong>Trackfi</strong> 📊</p>
             <p>We're excited to have you on board!</p>
             <hr />
-            <p style="color: #666; font-size: 14px;">— The Savory & Co Team</p>
+            <p style="color: #666; font-size: 14px;">— The Trackfi Team</p>
           </div>
         `,
       });

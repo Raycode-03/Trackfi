@@ -51,7 +51,7 @@ export default function SettingsPage() {
                 <button
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
-                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left ${
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors text-left cursor-pointer ${
                     activeTab === item.id
                       ? "bg-orange-500/20 border border-orange-500/30 text-orange-400"
                       : "text-white/60 hover:text-white hover:bg-white/5"

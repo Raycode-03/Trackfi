@@ -13,6 +13,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [68000, 67200, 65800, 64100, 63200, 64800, 64241],
     isWatchlisted: true,
     hasAlert: false,
+    holdings: 0.00000001,
   },
   {
     id: 'ethereum',
@@ -25,6 +26,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [3600, 3520, 3480, 3410, 3390, 3430, 3452],
     isWatchlisted: true,
     hasAlert: false,
+      holdings: 0.000005,
   },
   {
     id: 'solana',
@@ -37,6 +39,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [182, 175, 168, 155, 148, 151, 148],
     isWatchlisted: true,
     hasAlert: true,
+    holdings:0.0094
   },
   {
     id: 'binancecoin',
@@ -49,6 +52,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [592, 589, 585, 580, 582, 586, 584],
     isWatchlisted: false,
     hasAlert: false,
+    holdings: 0.0005,
   },
   {
     id: 'ripple',
@@ -61,6 +65,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [0.64, 0.63, 0.625, 0.618, 0.610, 0.614, 0.612],
     isWatchlisted: false,
     hasAlert: false,
+    holdings: 1000,
   },
   {
     id: 'cardano',
@@ -73,6 +78,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [0.47, 0.465, 0.458, 0.452, 0.445, 0.449, 0.448],
     isWatchlisted: false,
     hasAlert: false,
+    holdings:2000,
   },
   {
     id: 'dogecoin',
@@ -85,6 +91,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [0.19, 0.185, 0.178, 0.170, 0.162, 0.160, 0.158],
     isWatchlisted: false,
     hasAlert: false,
+    holdings:5000,
   },
   {
     id: 'polygon',
@@ -97,6 +104,7 @@ export const mockWatchlist: WatchlistCoin[] = [
     sparkline: [0.77, 0.758, 0.748, 0.740, 0.732, 0.728, 0.721],
     isWatchlisted: false,
     hasAlert: false,
+    holdings:200,
   },
 ]
 

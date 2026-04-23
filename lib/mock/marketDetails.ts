@@ -7,10 +7,16 @@ function generateChartData(basePrice: number, points: number, volatility: number
   const now = Date.now()
   const interval = (points === 24 ? 3600 : points === 7 ? 86400 : points === 30 ? 86400 : 86400 * 12) * 1000
   for (let i = points; i >= 0; i--) {
+    const open = price
     price = price + (Math.random() - 0.48) * volatility
+    const close = Math.max(price, basePrice * 0.5)
+    const swing = volatility * 0.3
     data.push({
       date: new Date(now - i * interval).toISOString(),
-      value: Math.max(price, basePrice * 0.5),
+      value: close,
+      open,
+      high: Math.max(open, close) + Math.random() * swing,
+      low: Math.min(open, close) - Math.random() * swing,
       volume: Math.random() * 1_000_000_000 + 500_000_000,
     })
   }
@@ -34,7 +40,7 @@ function makeCoin(base: Omit<CoinDetail, 'chartData' | 'sparkline'> & { basePric
 export const mockCoinDetails: Record<string, CoinDetail> = {
   bitcoin: makeCoin({
     id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC', image: '',
-    current_price: 64281.40, price_change_percentage_24h: 2.45, price_change_percentage_7d: 5.2,
+    current_price: 64281.40, price_change_percentage_24h: 2.45, price_change_percentage_7d: 12.2,
     market_cap: 1_260_000_000_000, total_volume: 28_000_000_000,
     ath: 69000, ath_change_percentage: -6.9,
     circulating_supply: 19_500_000, max_supply: 21_000_000,

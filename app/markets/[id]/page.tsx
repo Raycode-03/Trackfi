@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { useParams } from 'next/navigation'
 import { useCoinDetail } from '@/lib/query/index'
 import CoinDetailView from '@/components/markets/coinDetailsView'
-import { MarketsSkeleton } from '@/components/common/skeleton'
+import { CoinDetailSkeleton } from '@/components/common/skeleton'
 
 export default function CoinDetailPage() {
   const { id } = useParams<{ id: string }>()
@@ -15,7 +15,7 @@ export default function CoinDetailPage() {
     }
   },[isError]);
 
-  if (isLoading) return <MarketsSkeleton />
+  if (isLoading) return <CoinDetailSkeleton />
 
-  return <CoinDetailView coin={coin ?? undefined} />
+  return <CoinDetailView coin={coin ?? undefined} id={id} />
 }

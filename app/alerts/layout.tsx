@@ -28,7 +28,7 @@ export default function AdminLayout({
   // const { data: { user }, error } = await supabase.auth.getUser();
 
   // if (!user || error) {
-  //   redirect("/admin/login");
+  //   redirect("/login");
   // }
 
   const user = {

@@ -13,45 +13,59 @@ export async function generateMetadata(): Promise<Metadata> {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const { data: profile } = await supabase
+  .from('profiles')
+  .select('name')
+  .eq('id', user?.id)
+  .maybeSingle()
+
   return {
-    title: user ? `${user.email} — Trackfi Dashboard` : "Trackfi Dashboard",
+    title: user
+      ? `${profile?.name || user.email} — Trackfi Dashboard`
+      : "Trackfi Dashboard",
     description: "Track your crypto portfolio in real time",
   };
 }
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  // const supabase = await createClient();
+  const supabase = await createClient();
 
-  // const { data: { user }, error } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
 
-  // if (!user || error) {
-  //   redirect("/admin/login");
-  // }
+  if (!user || error) {
+    redirect("/login");
+  }
+    const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .maybeSingle()
 
-  const user = {
-    id: "123",
-    email: "akerel@gmail.com",
-    name: "ray",
-    packageType: "Premium",
-    image: "/images/person1.jpg",
-  };
   const NAVBAR_HEIGHT = 20;
+
+  const mergedUser = {
+  ...user,
+  name: profile?.name,
+  image: profile?.image,
+  package_type: profile?.package_type,
+}
 
   return (
     <SidebarProvider defaultOpen={false}>
-      <AppSidebar user={user} />
+      <AppSidebar user={mergedUser} />
       <SidebarInset>
-        <div style={{ paddingTop: NAVBAR_HEIGHT }}>
-          <Providers>{children}</Providers>
-        </div>
         <NavbarDashboard pageTitle="Dashboard" />
-        {/* <UserProvider user={user} staff={staff}>
-          
-          
-        </UserProvider> */}
+        <UserProvider user={mergedUser}>
+          <Providers>
+            <div style={{ paddingTop: NAVBAR_HEIGHT }}>{children}</div>
+          </Providers>
+        </UserProvider>
       </SidebarInset>
     </SidebarProvider>
   );

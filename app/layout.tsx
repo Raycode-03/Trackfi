@@ -57,7 +57,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={dmSerifText.variable}>
+        <body className={`${dmSerifText.variable} ${dmSerifText.className}`}>
         {children}
         <Toaster
           position="top-right"

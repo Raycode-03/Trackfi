@@ -24,7 +24,7 @@ const cfg = {
   error: "Something went wrong",
   passwordButton: "Set New Password",
   linkButton: "← Back to login",
-  linkHref: "/admin/login",
+  linkHref: "/login",
 };
 
 export default function NewPasswordPage() {
@@ -40,7 +40,7 @@ export default function NewPasswordPage() {
     
     if (!codeFromUrl) {
       toast.error("Invalid reset link. Please request a new one.");
-      router.push("/admin/forgot-password");
+      router.push("/forgot-password");
     } else {
       setCode(codeFromUrl);
     }
@@ -68,7 +68,7 @@ export default function NewPasswordPage() {
     const toastId = toast.loading("Updating password...");
 
     try {
-      const res = await fetch("/api/admin/new-password", {
+      const res = await fetch("/api/auth/new-password", {
         method: "POST",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify({ password: newPassword }),
@@ -84,7 +84,7 @@ export default function NewPasswordPage() {
       toast.success(data.message || cfg.success, { id: toastId });
       
       setTimeout(() => {
-        router.push("/admin/login");
+        router.push("/login");
       }, 1500);
 
     } catch (err) {
@@ -149,7 +149,7 @@ export default function NewPasswordPage() {
             </div>
 
             <CardFooter className="mt-6 px-0">
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="bg-black hover:bg-gray-900 text=gray-400 w-full" disabled={loading}>
                 {loading ? "Updating..." : cfg.passwordButton}
               </Button>
             </CardFooter>
@@ -161,7 +161,7 @@ export default function NewPasswordPage() {
         <CardFooter>
           <p className="text-sm text-gray-500 mt-2">
             <Link href={cfg.linkHref}>
-              <Button variant="link" type="button" className="p-0 h-auto">
+              <Button variant="link" type="button" className="text-black cursor-pointer p-0 h-auto">
                 {cfg.linkButton}
               </Button>
             </Link>

@@ -12,7 +12,7 @@ const SignInWithGoogleButton = () => {
 
   const handleGoogleSignIn = async () => {
     setLoadingType('google');
-    window.location.href = '/api/admin/google';  
+    window.location.href = '/api/auth/google';  
   };
 
   return (

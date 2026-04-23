@@ -23,7 +23,7 @@ export default function VerifyEmailPage() {
     const toastId = toast.loading("Sending verification email...");
 
     try {
-      const res = await fetch("/api/auth/resend-verification", {
+      const res = await fetch("/api/resend-verification", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
@@ -45,24 +45,9 @@ export default function VerifyEmailPage() {
 
   return (
     <div className="w-full min-h-screen flex">
-      
-      {/* Left: Verification Message */}
-      <div className="w-full md:w-1/2 relative bg-background">
-        {/* Logo - fixed at top-left corner */}
-        <div className="absolute -top-12 left-6 z-10">
-          <Image
-            src="/logos/savory_icon.png"
-            alt="Savory logo"
-            width={120}
-            height={120}
-            className="object-contain"
-            priority
-          />
-        </div>
-
-        {/* Centered content */}
+    
         <div className="w-full h-full flex items-center justify-center p-6">
-          <Card className="w-full max-w-md border-none shadow-none">
+          <Card className="w-full max-w-md border-none shadow-none bg-white">
             <CardHeader className="text-center space-y-4">
               <div className="mx-auto w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
                 <Mail className="w-8 h-8 text-blue-600" />
@@ -98,8 +83,8 @@ export default function VerifyEmailPage() {
                 <Button 
                   onClick={handleResendEmail}
                   disabled={isResending}
-                  variant="outline"
-                  className="w-full"
+                  variant="secondary"
+                  className="w-full bg-gray-200"
                 >
                   {isResending ? (
                     <>
@@ -126,27 +111,6 @@ export default function VerifyEmailPage() {
             </CardContent>
           </Card>
         </div>
-      </div>
-
-      {/* Right: Image + Overlay (Desktop only) */}
-      <div className="hidden md:block md:w-1/2 relative">
-        <Image
-          src="/images/restaurant_image.jpg"
-          alt="Verify email background"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-8 text-center">
-          <h1 className="text-4xl font-bold mb-2">
-            Almost there!
-          </h1>
-          <p className="text-lg opacity-90 max-w-md">
-            Just one more step to get started with Savory.
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

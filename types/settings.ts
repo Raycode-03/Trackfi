@@ -2,11 +2,10 @@ export type NotificationChannel = "email" | "push" | "sms";
 export type CurrencyPreference = "USD" | "EUR" | "GBP" | "JPY" | "AUD";
 export type IntegrationProvider =
   | "coinbase"
-  | "kraken"
   | "binance"
-  | "ftx"
-  | "gemini";
-export type IntegrationStatus = "connected" | "disconnected" | "error";
+  | "metamask"
+  | "trustwallet";
+export type IntegrationStatus = "connected" | "disconnected" | "error" | "coming_soon";
 
 export interface UserProfile {
   id: string;
@@ -41,17 +40,17 @@ export interface SecuritySettings {
 }
 
 export interface Integration {
-  id: string;
-  provider: IntegrationProvider;
-  name: string;
-  status: IntegrationStatus;
-  connectedAt?: string;
-  lastSyncedAt?: string;
-  isPrimary?: boolean;
-  description: string;
-  icon?: string;
+  id: string | null     
+  provider: IntegrationProvider
+  name: string
+  status: IntegrationStatus
+  connectedAt?: string | null
+  lastSyncedAt?: string | null
+  description: string
+  icon?: string
+  walletAddress?: string | null
+  isPrimary?: boolean
 }
-
 export interface AppSettings {
   profile: UserProfile;
   notifications: NotificationSettings;

@@ -13,6 +13,22 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com'
+      },
+       {
+        protocol: 'https',
+        hostname: 'assets.trustwallet.com'
+      },
+       {
+        protocol: 'https',
+        hostname: 'assets.coingecko.com'
+      },
     ],
   },
   webpack: (config) => {

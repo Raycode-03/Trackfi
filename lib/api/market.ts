@@ -1,43 +1,39 @@
-import { mockMarkets } from "@/lib/mock/markets";
-import { mockCoinDetails } from "@/lib/mock/marketDetails";
-// swap these for real fetch calls when backend is ready
-export async function fetchMarketlist() {
-  // const res = await fetch('/api/markets')
-  // if (!res.ok) throw new Error('Failed to fetch market list')
-  // return res.json()
-  return mockMarkets;
+import { TimeRange } from "@/types";
+
+export async function fetchMarketlist(page = 1, search = "") {
+  const params = new URLSearchParams({
+    page: String(page),
+    ...(search && { search }),
+  });
+  const res = await fetch(`/api/markets?${params}`);
+  if (!res.ok) throw new Error("Failed to fetch market list");
+  return res.json(); // { coins, total, page, limit, cgPage }
 }
 
 export async function fetchCoinDetail(id: string) {
-  // const res = await fetch(`/api/markets/${id}`)
-  // if (!res.ok) throw new Error('Failed to fetch coin detail')
-  // return res.json()
-  return mockCoinDetails[id] || null;
+  const res = await fetch(`/api/markets/${id}`);
+  if (!res.ok) throw new Error("Failed to fetch coin detail");
+  return res.json();
 }
 
-export async function toggleMarketStar(coinId: string, starred: boolean) {
-  // const res = await fetch(`/api/watchlist/${coinId}/star`, {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ starred }),
-  // })
-  // if (!res.ok) throw new Error('Failed to toggle watchlist star')
-  // return res.json()
-  console.log(`Toggled star for ${coinId}: ${starred}`);
-}
-
-export async function toggleMarketAlert(
-  coinId: string,
-  alert: { type: "price" | "percentage"; value: number } | null,
+export async function fetchCoinChart(
+  id: string,
+  range: TimeRange,
+  beforeTs?: number | null,
 ) {
-  // const res = await fetch(`/api/watchlist/${coinId}/alert`, {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify(alert),
-  // })
-  // if (!res.ok) throw new Error('Failed to toggle watchlist alert')
-  // return res.json()
-  console.log(
-    `Toggled alert for ${coinId}: ${alert ? `${alert.type} ${alert.value}` : "none"}`,
-  );
+  const params = new URLSearchParams({ range });
+  if (beforeTs) params.set("before", String(beforeTs));
+  try {
+    const res = await fetch(`/api/markets/${id}/chart?${params}`);
+    if (res.status === 429) throw new Error("RATE_LIMITED");
+    if (res.status === 401  || res.status === 403) throw new Error("PROVIDER_AUTH_ERROR");
+    if (res.status === 502) throw new Error("UPSTREAM_DOWN");
+    if (!res.ok) throw new Error(`API_ERROR_${res.status}`);
+
+    return res.json();
+  } catch (err) {
+    if (err instanceof TypeError) throw new Error("NETWORK_ERROR");
+    throw err;
+  }
+
 }

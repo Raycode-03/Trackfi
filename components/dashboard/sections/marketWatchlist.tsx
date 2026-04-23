@@ -74,7 +74,7 @@ function MarketWatchlist({ market }: { market: MarketCoinItem[] }) {
             {market.map((coin) => {
               const isPositive = coin.price_change_percentage_24h >= 0;
               const isWatchlisted = watchlisted.has(coin.id);
-              const symbol = coin.symbol.toUpperCase().slice(0, 3);
+              const symbol = coin.symbol.toUpperCase()?.slice(0, 3);
               const color = coinColors[symbol] ?? defaultColor;
 
               return (

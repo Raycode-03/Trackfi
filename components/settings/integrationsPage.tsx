@@ -2,32 +2,42 @@
 
 import React, { useState } from "react";
 import { useIntegrations } from "@/lib/query/settings";
-import {
-  connectIntegration,
-  disconnectIntegration,
-  syncIntegration,
-} from "@/lib/api/settings";
-import { Zap, Check } from "lucide-react";
+import { connectIntegration, syncIntegration } from "@/lib/api/settings";
+import { Zap, Check, Loader2 } from "lucide-react";
 import { IntegrationCard } from "./integrationCard";
+import { defaultIntegrations } from "@/lib/constants/Integrations";
+import { Integration } from "@/types/settings";
 
 export default function IntegrationsPage() {
-  const { data: integrations} = useIntegrations();
+  const { data: integrations, isLoading } = useIntegrations();
   const [syncing, setSyncing] = useState<string | null>(null);
 
-  const handleSync = async (id: string) => {
+  const integrationsData: Integration[] = integrations || defaultIntegrations;
+
+  const handleSync = async (id: string | null) => {
+    if (!id) return;
     setSyncing(id);
     await syncIntegration(id);
     setSyncing(null);
   };
 
-  const connectedIntegrations =
-    integrations?.filter((i) => i.status === "connected") || [];
-  const availableIntegrations =
-    integrations?.filter((i) => i.status !== "connected") || [];
+  const connectedIntegrations = integrationsData.filter(
+    (i) => i.status === "connected",
+  );
+  const availableIntegrations = integrationsData.filter(
+    (i) => i.status !== "connected",
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-6 h-6 animate-spin text-white/40" />
+      </div>
+    );
+  }
 
   return (
     <div className="px-6 pb-10 min-h-screen text-white">
-      {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold mb-2">Integrations</h1>
         <p className="text-white/60 text-sm md:text-base">
@@ -46,12 +56,14 @@ export default function IntegrationsPage() {
               ({connectedIntegrations.length})
             </span>
           </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             {connectedIntegrations.map((integration) => (
               <IntegrationCard
-                key={integration.id}
+                key={integration.id ?? integration.provider} // ← fallback to provider
                 integration={integration}
+                onConnect={(address) =>
+                  connectIntegration(integration.provider, { address })
+                }
                 onSync={() => handleSync(integration.id)}
                 isSyncing={syncing === integration.id}
               />
@@ -63,13 +75,14 @@ export default function IntegrationsPage() {
       {/* Available Integrations */}
       <div>
         <h2 className="text-xl font-semibold mb-6">Available Exchanges</h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
           {availableIntegrations.map((integration) => (
             <IntegrationCard
-              key={integration.id}
+              key={integration.provider} // ← always use provider for disconnected
               integration={integration}
-              onConnect={() => connectIntegration(integration.provider, {})}
+              onConnect={(address) =>
+                connectIntegration(integration.provider, { address })
+              }
               onSync={() => handleSync(integration.id)}
               isSyncing={syncing === integration.id}
             />
@@ -85,10 +98,9 @@ export default function IntegrationsPage() {
             <h3 className="font-semibold mb-2">How to Connect</h3>
             <ol className="text-sm text-white/60 space-y-1 list-decimal list-inside">
               <li>
-                Click &quot;Connect&quot; on the exchange you want to integrate
+                Click &quot;Connect&quot; on the wallet you want to integrate
               </li>
-              <li>Generate API keys from your exchange account settings</li>
-              <li>Paste the keys in the connection form</li>
+              <li>Paste your wallet address in the connection form</li>
               <li>Your transactions will sync automatically</li>
             </ol>
           </div>

@@ -34,7 +34,7 @@ export function CoinDetailHeader({
         <div
           className={`w-14 h-14 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${color.bg} ${color.text}`}
         >
-          {coin.symbol.slice(0, 3)}
+          {coin.symbol?.slice(0, 3)}
         </div>
         <div>
           <div className="flex items-center gap-2">
@@ -54,7 +54,7 @@ export function CoinDetailHeader({
                 <ArrowDownRight className="w-3.5 h-3.5" />
               )}
               {isPositive ? "+" : ""}
-              {coin.price_change_percentage_24h.toFixed(2)}% 24h
+              {coin.price_change_percentage_24h?.toFixed(2)}% 24h
             </span>
           </div>
         </div>
@@ -64,7 +64,7 @@ export function CoinDetailHeader({
       <div className="flex items-center gap-2 flex-wrap">
         <button
           onClick={onToggleWatchlist}
-          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors ${
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors cursor-pointer ${
             isWatchlisted
               ? "bg-yellow-400/10 border-yellow-400/30 text-yellow-400"
               : "border-white/10 text-white/60 hover:text-white hover:border-white/20"
@@ -77,7 +77,7 @@ export function CoinDetailHeader({
         </button>
         <button
           onClick={onOpenAlert}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 border border-primary/30 text-primary text-sm font-medium hover:bg-primary/20 transition-colors"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary/10 border border-primary/30 text-primary text-sm font-medium hover:bg-primary/20 transition-colors cursor-pointer"
         >
           <Bell className="w-4 h-4" />
           Set Alert

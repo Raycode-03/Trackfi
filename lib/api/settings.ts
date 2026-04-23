@@ -56,25 +56,28 @@ export async function updateSecuritySettings(
 }
 
 export async function fetchIntegrations() {
-  // const res = await fetch('/api/settings/integrations')
-  // if (!res.ok) throw new Error('Failed to fetch integrations')
-  // return res.json()
-  return mockSettings.integrations;
+  const res = await fetch('/api/settings/integrations')
+  if (!res.ok) throw new Error('Failed to fetch integrations')
+  return res.json()
 }
 
 export async function connectIntegration(
   provider: string,
   credentials: unknown,
 ) {
-  // TODO: wire to /api/settings/integrations/connect when backend is ready
-  console.warn("connectIntegration: not implemented", provider, credentials);
-  return null;
+  const res = await fetch('/api/settings/connect', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ provider, credentials }),
+  });
+  if (!res.ok) throw new Error('Failed to connect integration');
+  return res.json();
 }
 
 export async function disconnectIntegration(integrationId: string) {
-  // TODO: wire to /api/settings/integrations/[id]/disconnect when backend is ready
-  console.warn("disconnectIntegration: not implemented", integrationId);
-  return null;
+  const res = await fetch(`/api/settings/disconnect?integrationId=${integrationId}`);
+  if (!res.ok) throw new Error('Failed to disconnect integration');
+  return res.json();
 }
 
 export async function syncIntegration(integrationId: string) {

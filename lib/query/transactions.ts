@@ -1,21 +1,17 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchTransactions, fetchTransactionStats } from '@/lib/api/transactions'
- 
-export const useTransactions = () =>
+
+export const useTransactions = (page = 1, period = "30") =>
   useQuery({
-    queryKey: ['transactions'],
-    queryFn: fetchTransactions,
+    queryKey: ["transactions", page, period],
+    queryFn: () => fetchTransactions(page, period),
     staleTime: 1000 * 60 * 2,
-    refetchInterval: false,
-    retry: false,
-  })
- 
-export const useTransactionStats = () =>
+    placeholderData: (prev) => prev,
+  });
+export const useTransactionStats = (period = "30") =>
   useQuery({
-    queryKey: ['transaction-stats'],
-    queryFn: fetchTransactionStats,
-    staleTime: 1000 * 60 * 5,
-    refetchInterval: false,
-    retry: false,
-  })
+    queryKey: ["transaction-stats", period],
+    queryFn: () => fetchTransactionStats(period),
+    staleTime: 1000 * 60 * 2,
+  });
  

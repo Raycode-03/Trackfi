@@ -1,20 +1,45 @@
 "use client";
-import React from "react";
+import React, { useRef, useEffect } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { links } from "@/lib/constants/landing";
+import { useGsapFadeUp } from "@/hooks/useGsapAnimation";
 
-const links = {
-  Product: ["Features", "Pricing", "Changelog", "Roadmap"],
-  Company: ["About", "Blog", "Careers", "Press"],
-  Resources: ["Docs", "API Reference", "Status", "Support"],
-  Legal: ["Privacy", "Terms", "Cookie Policy", "Licenses"],
-};
+gsap.registerPlugin(ScrollTrigger);
 
 export function FooterSection() {
+  const brandRef = useGsapFadeUp();
+  const linksRef = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    linksRef.current.forEach((el, index) => {
+      if (!el) return;
+      gsap.fromTo(
+        el,
+        { opacity: 0, y: 50 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: index * 0.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+            end: "bottom top",
+            toggleActions: "play none none reverse",
+          },
+        },
+      );
+    });
+  }, []);
+
   return (
     <footer className="bg-[#0a0a0a] border-t border-white/5 py-16 px-6">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
+          <div ref={brandRef} className="col-span-2 md:col-span-1">
             <p className="text-white font-black text-xl mb-3">Track8</p>
             <p className="text-white/30 text-xs leading-relaxed mb-4">
               The ultimate crypto portfolio tracker for modern investors.
@@ -32,8 +57,13 @@ export function FooterSection() {
           </div>
 
           {/* Link columns */}
-          {Object.entries(links).map(([group, items]) => (
-            <div key={group}>
+          {Object.entries(links).map(([group, items], index) => (
+            <div
+              key={group}
+              ref={(el) => {
+                if (el) linksRef.current[index] = el;
+              }}
+            >
               <p className="text-white text-xs font-semibold uppercase tracking-widest mb-4">
                 {group}
               </p>
@@ -54,8 +84,12 @@ export function FooterSection() {
         </div>
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-white/20 text-xs">© 2025 Track8. All rights reserved.</p>
-          <p className="text-white/20 text-xs">Built for the financial future.</p>
+          <p className="text-white/20 text-xs">
+            © 2025 Track8. All rights reserved.
+          </p>
+          <p className="text-white/20 text-xs">
+            Built for the financial future.
+          </p>
         </div>
       </div>
     </footer>

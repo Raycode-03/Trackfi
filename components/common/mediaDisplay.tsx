@@ -23,7 +23,7 @@ function MediaDisplay({ image_url, name, className }: MediaDisplayProps) {
           height={80}
         />
       ) : (
-        <span className="text-xs text-white font-bold">
+        <span className="text-xs  rounded-full text-white font-bold h-full w-full object-cover flex items-center justify-center bg-gray-500">
           {name?.charAt(0).toUpperCase() ?? "U"}
         </span>
       )}

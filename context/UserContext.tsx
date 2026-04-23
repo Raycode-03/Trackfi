@@ -2,22 +2,25 @@
 
 import { createContext, useContext, ReactNode } from "react";
 import { User } from "@supabase/supabase-js";
-import type { StaffMember, UserContextType } from '@/types';
 
+
+type UserContextType = {
+  user: User;
+}
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
 export function UserProvider({
   children,
   user,
-  staff,
+  
 }: {
   children: ReactNode;
   user: User;
-  staff: StaffMember;
+  
 }) {
   return (
-    <UserContext.Provider value={{ user, staff }}>
+    <UserContext.Provider value={{ user }}>
       {children}
     </UserContext.Provider>
   );

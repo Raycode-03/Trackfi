@@ -5,6 +5,7 @@ export function exportWatchlistToCSV(coins: WatchlistCoin[]) {
   const headers = [
     'Name',
     'Symbol',
+    'holdings (USD)',
     'Price (USD)',
     '24H Change %',
     '7D Change %',
@@ -16,6 +17,7 @@ export function exportWatchlistToCSV(coins: WatchlistCoin[]) {
   const rows = coins.map(c => [
     c.name,
     c.symbol,
+    c.holdings != null ? c.holdings.toFixed(2) : '0.00',
     c.current_price,
     `${c.price_change_percentage_24h.toFixed(2)}%`,
     `${c.price_change_percentage_7d.toFixed(2)}%`,

@@ -4,6 +4,7 @@ import { ArrowUpRight, ArrowDownRight, Star, Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { formatCurrency } from "@/lib/helpers/formatPrice";
 import { WatchlistCoin } from "@/types/index";
+import Image from "next/image";
 function Sparkline({ data, positive }: { data: number[]; positive: boolean }) {
   const min = Math.min(...data);
   const max = Math.max(...data);
@@ -33,6 +34,7 @@ function Sparkline({ data, positive }: { data: number[]; positive: boolean }) {
 }
 
 function fmtMarketCap(n: number) {
+  if (n == null || isNaN(n)) return "—";
   if (n >= 1e12) return `$${(n / 1e12).toFixed(2)}T`;
   if (n >= 1e9) return `$${(n / 1e9).toFixed(1)}B`;
   if (n >= 1e6) return `$${(n / 1e6).toFixed(1)}M`;
@@ -40,6 +42,8 @@ function fmtMarketCap(n: number) {
 }
 
 function Pct({ value }: { value: number }) {
+  if (value == null || isNaN(value))
+    return <span className="text-sm text-white/30">—</span>;
   const pos = value >= 0;
   return (
     <span
@@ -51,7 +55,7 @@ function Pct({ value }: { value: number }) {
         <ArrowDownRight className="w-3.5 h-3.5" />
       )}
       {pos ? "+" : ""}
-      {value.toFixed(2)}%
+      {value?.toFixed(2)}%
     </span>
   );
 }
@@ -72,12 +76,18 @@ interface CoinRowProps {
   coin: WatchlistCoin;
   onToggleStar: (id: string) => void;
   onToggleAlert: (id: string) => void;
+  showHoldings?: boolean;
 }
 
-export function CoinRowSection({ coin, onToggleStar, onToggleAlert }: CoinRowProps) {
+export function CoinRowSection({
+  coin,
+  onToggleStar,
+  onToggleAlert,
+  showHoldings = false,
+}: CoinRowProps) {
   const router = useRouter();
   const color = coinColors[coin.symbol] ?? defaultColor;
-  console.log(coin, "coins from markets to details ", coin.id)
+  console.log(coin, "coins from markets to details ", coin.id);
   return (
     <tr
       className="border-t border-white/5 hover:bg-white/5 transition-colors group cursor-pointer"
@@ -86,22 +96,60 @@ export function CoinRowSection({ coin, onToggleStar, onToggleAlert }: CoinRowPro
       <td className="py-4 pl-2 pr-4">
         <div className="flex items-center gap-3">
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${color.bg} ${color.text}`}
+            className={`w-9 h-9 rounded-full overflow-hidden flex items-center justify-center text-xs font-bold shrink-0 ${color.bg}`}
           >
-            {coin.symbol.slice(0, 3)}
+            {coin.image ? (
+              <Image
+                src={coin.image}
+                alt={coin.name}
+                width={36}
+                height={36}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.removeAttribute("hidden");
+                }}
+              />
+            ) : null}
+
+            <span hidden className={`text-xs font-bold ${color.text}`}>
+              {coin?.symbol?.slice(0, 3)}
+            </span>
           </div>
           <div>
-            <p className="text-sm font-semibold text-white">{coin.name}</p>
+            <p
+              className="text-sm font-semibold text-white truncate max-w-[120px]"
+              title={coin.name}
+            >
+              {coin.name}
+            </p>
             <p className="text-xs text-white/40">{coin.symbol}</p>
           </div>
         </div>
       </td>
 
-      <td className="py-4 pr-4">
+      <td className="py-4 pr-4 md:table-cell">
         <p className="text-sm font-medium text-white whitespace-nowrap">
           {formatCurrency(coin.current_price)}
         </p>
       </td>
+
+      {showHoldings && (
+        <td className="py-4 pr-4">
+          <p className="text-sm font-medium text-white">
+            {coin.holdings != null ? (
+              `${coin.holdings} ${coin.symbol.toUpperCase()}`
+             ) : (
+        <span className="text-white/40 text-xs">No holdings</span>
+      )}
+          </p>
+          {coin.holdings != null && (
+            <p className="text-xs text-white/40">
+              {formatCurrency(coin.holdings * coin.current_price)}
+            </p>
+          )}
+        </td>
+      )}
 
       <td className="py-4 pr-4">
         <Pct value={coin.price_change_percentage_24h} />
@@ -117,13 +165,14 @@ export function CoinRowSection({ coin, onToggleStar, onToggleAlert }: CoinRowPro
         </p>
       </td>
 
-      <td className="py-4 pr-4 hidden sm:table-cell">
-        <Sparkline
-          data={coin.sparkline}
-          positive={coin.price_change_percentage_7d >= 0}
-        />
+      <td className="py-4 pr-4 hidden lg:table-cell">
+        {coin.sparkline?.length > 1 && (
+          <Sparkline
+            data={coin.sparkline}
+            positive={coin.price_change_percentage_7d >= 0}
+          />
+        )}
       </td>
-
       {/* Actions */}
       <td className="py-4 pr-2">
         <div className="flex items-center gap-2">
@@ -132,7 +181,8 @@ export function CoinRowSection({ coin, onToggleStar, onToggleAlert }: CoinRowPro
               e.stopPropagation();
               onToggleStar(coin.id);
             }}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            title ="Add to Watchlist"
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <Star
               className={`w-4 h-4 transition-colors ${coin.isWatchlisted ? "text-yellow-400 fill-yellow-400" : "text-white/20 hover:text-yellow-400"}`}
@@ -143,7 +193,8 @@ export function CoinRowSection({ coin, onToggleStar, onToggleAlert }: CoinRowPro
               e.stopPropagation();
               onToggleAlert(coin.id);
             }}
-            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors"
+            title='Add Alert'
+            className="p-1.5 rounded-lg hover:bg-white/10 transition-colors cursor-pointer"
           >
             <Bell
               className={`w-4 h-4 transition-colors ${coin.hasAlert ? "text-primary fill-primary/20" : "text-white/20 hover:text-primary"}`}

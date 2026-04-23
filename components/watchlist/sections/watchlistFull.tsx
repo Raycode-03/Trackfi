@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { ArrowUpRight, Rocket } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Rocket } from "lucide-react";
 import { formatCurrency } from "@/lib/helpers/formatPrice";
 import { WatchlistCoin, WatchlistStats } from "@/types/index";
 import { SentimentBar } from "./watchSentimentBar";
@@ -8,33 +8,53 @@ import CoinTable from "@/components/common/coinTable";
 import { toggleWatchlistAlert, toggleWatchlistStar } from "@/lib/api";
 import { SetAlertModal } from "../../shared/modals/setAlertModal";
 import { AlertCondition } from "@/types/index";
+import { toast } from "sonner";
 
 interface WatchlistFullProps {
   coins: WatchlistCoin[];
   stats?: WatchlistStats;
+  page: number;
+  total: number;
+  onPageChange: (page: number) => void;
 }
 
 export function WatchlistFull({
   coins: initialCoins,
   stats,
+  page,
+  total,
+  onPageChange,
 }: WatchlistFullProps) {
-  const safeStats = stats ?? {
-    totalValue: 0,
-    totalChangePercent: 0,
-    topPerformer: { symbol: "N/A", changePercent: 0 },
-    marketSentiment: { label: "Neutral", score: 50 },
-  };
   const [coins, setCoins] = useState(initialCoins);
   const [showAlertModal, setShowAlertModal] = useState(false);
   const [selectedCoinId, setSelectedCoinId] = useState<string | null>(null);
+  const safeStats: WatchlistStats = {
+    totalValue: stats?.totalValue ?? 0,
+    totalChangePercent: stats?.totalChangePercent ?? 0,
+    topPerformer: stats?.topPerformer ?? { symbol: "N/A", changePercent: 0 },
+    marketSentiment: {
+      label: stats?.marketSentiment?.label ?? "Neutral",
+      score: stats?.marketSentiment?.score ?? 50,
+    },
+  };
 
   const toggleStar = (id: string) => {
+    const coin = coins.find((c) => c.id === id);
+    if (!coin) return;
+    const newState = !coin.isWatchlisted;
     setCoins((prev) =>
       prev.map((c) =>
         c.id === id ? { ...c, isWatchlisted: !c.isWatchlisted } : c,
       ),
     );
-    toggleWatchlistStar(id, !coins.find((c) => c.id === id)?.isWatchlisted);
+    toast.success(newState ? "Added to watchlist" : "Removed from watchlist");
+    toggleWatchlistStar(
+      id,
+      !coin.isWatchlisted,
+      coin.name,
+      coin.symbol,
+      coin.image ?? "",
+    );
   };
 
   const toggleAlert = (id: string) => {
@@ -66,8 +86,16 @@ export function WatchlistFull({
           <p className="text-2xl font-bold text-white">
             {formatCurrency(safeStats.totalValue)}
           </p>
-          <p className="text-xs text-green-400 mt-1 flex items-center gap-1">
-            <ArrowUpRight className="w-3 h-3" />+{safeStats.totalChangePercent}%
+          <p
+            className={`text-xs mt-1 flex items-center gap-1 ${safeStats.totalChangePercent >= 0 ? "text-green-400" : "text-red-400"}`}
+          >
+            {safeStats.totalChangePercent >= 0 ? (
+              <ArrowUpRight className="w-3 h-3" />
+            ) : (
+              <ArrowDownRight className="w-3 h-3" />
+            )}
+            {safeStats.totalChangePercent >= 0 ? "+" : ""}
+            {safeStats.totalChangePercent}%
           </p>
         </div>
 
@@ -109,18 +137,27 @@ export function WatchlistFull({
         showExport={true}
         onToggleStar={toggleStar}
         onToggleAlert={toggleAlert}
+        showHoldings={true}
+        isServerPaginated={true}
+        page={page}
+        total={total}
+        limit={20}
+        onPageChange={onPageChange}
       />
 
       {showAlertModal && selectedCoinId && (
         <SetAlertModal
           coinSymbol={coins.find((c) => c.id === selectedCoinId)?.symbol || ""}
+          coinPrice={
+            coins.find((c) => c.id === selectedCoinId)?.current_price || 0
+          }
           onClose={() => {
             setShowAlertModal(false);
             setSelectedCoinId(null);
           }}
           onCreate={handleAlertCreate}
         />
-      )} 
+      )}
     </div>
   );
 }

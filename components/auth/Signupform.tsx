@@ -45,14 +45,14 @@ export function SignUpForm() {
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    const confirm = formData.get("confirm") as string;
-    if (password !== confirm) {
+    const confirm_password = formData.get("confirm_password") as string;
+    if (password !== confirm_password) {
       toast.error("Passwords do not match", { id: toastId });
       setLoadingType(null);
       return;
     }
     try {
-      const res = await fetch("/api/admin/signup", {
+      const res = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -65,7 +65,7 @@ export function SignUpForm() {
       } else {
         toast.success(SignupContent.success, { id: toastId });
 
-        router.push(`/admin/verify-email?email=${encodeURIComponent(email)}`);
+        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
       }
     } catch {
       toast.error(SignupContent.error, { id: toastId });
@@ -126,9 +126,9 @@ export function SignUpForm() {
               <div className="flex gap-6 mb-4">
                 <div className="relative">
                   <Input
-                    id="confirm"
+                    id="password"
                     type={showConfirm ? "text" : "password"}
-                    name="confirm"
+                    name="password"
                     required
                     disabled={isDisabled}
                     className="bg-[#262626] border-white/10 text-white pr-10 focus:bg-[#3f3e3e]"
@@ -148,9 +148,9 @@ export function SignUpForm() {
 
                 <div className="relative">
                   <Input
-                    id="confirm"
+                    id="confirm_passsword"
                     type={showPassword ? "text" : "password"}
-                    name="confirm"
+                    name="confirm_password"
                     required
                     disabled={isDisabled}
                     className="bg-[#262626] border-white/10 text-white pr-10 focus:bg-[#3f3e3e]"

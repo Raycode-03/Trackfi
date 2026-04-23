@@ -12,7 +12,7 @@ const SignInWithGithubButton = () => {
 
   const handleGithubSignIn = () => {
     setLoadingType('github');
-    window.location.href = "/api/admin/github";
+    window.location.href = "/api/auth/github";
   };
 
   return (

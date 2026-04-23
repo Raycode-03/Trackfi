@@ -1,21 +1,41 @@
 "use client";
-// components/transactions/sections/TransactionStats.tsx
-import React from "react";
-import { CalendarDays, ShoppingCart, Tag, List } from "lucide-react";
+import React, { useState } from "react";
+import {
+  CalendarDays,
+  ShoppingCart,
+  Tag,
+  List,
+} from "lucide-react";
 import { TransactionStats } from "@/types/transactions";
 import { formatCurrency } from "@/lib/helpers/formatPrice";
+
+type FilterType =
+  | "all"
+  | "pending"
+  | "completed"
+  | "failed"
+
 
 interface TransactionStatsProps {
   stats: TransactionStats;
   period: string;
   onPeriodChange: (val: string) => void;
+  onFilterChange?: (filter: FilterType) => void;
 }
 
 export function TransactionStatsSection({
   stats,
   period,
   onPeriodChange,
+  onFilterChange,
 }: TransactionStatsProps) {
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+
+  const handleFilterClick = (filter: FilterType) => {
+    setActiveFilter(filter);
+    onFilterChange?.(filter);
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-3 md:gap-4 mb-6">
       {/* Left — 65% */}
@@ -38,7 +58,7 @@ export function TransactionStatsSection({
             <select
               value={period}
               onChange={(e) => onPeriodChange(e.target.value)}
-              className="bg-[#111] text-white text-xs focus:outline-none cursor-pointer flex-1 sm:flex-none"
+              className=" text-white text-xs border-0 focus:outline-none cursor-pointer flex-1 sm:flex-none"
             >
               <option value="30" className="bg-[#111] text-white">
                 Last 30 Days
@@ -72,9 +92,11 @@ export function TransactionStatsSection({
                 <p className="text-lg md:text-xl font-bold text-primary truncate">
                   {formatCurrency(stats.totalVolumeBought)}
                 </p>
-                <span className="text-xs text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded shrink-0">
-                  +{stats.boughtChange}%
-                </span>
+                {stats.boughtChange !== 0 && (
+                  <span className="text-xs text-green-400 bg-green-400/10 px-1.5 py-0.5 rounded shrink-0">
+                    +{stats.boughtChange}%
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -91,9 +113,11 @@ export function TransactionStatsSection({
                 <p className="text-lg md:text-xl font-bold text-red-400 truncate">
                   {formatCurrency(stats.totalVolumeSold)}
                 </p>
-                <span className="text-xs text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded shrink-0">
-                  {stats.soldChange}%
-                </span>
+                {stats.soldChange !== 0 && (
+                  <span className="text-xs text-red-400 bg-red-400/10 px-1.5 py-0.5 rounded shrink-0">
+                    {stats.soldChange}%
+                  </span>
+                )}
               </div>
             </div>
           </div>
@@ -101,54 +125,78 @@ export function TransactionStatsSection({
       </div>
 
       {/* Right — 35% */}
-      <div className="w-full lg:w-[35%] bg-white/5 border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col gap-2">
-        <p className="text-xs text-white/40 uppercase tracking-widest mb-2">
-          Filter by Type
-        </p>
+      <div className="hidden lg:flex w-full lg:w-[35%] bg-white/5 border border-white/10 rounded-2xl p-4 md:p-6 flex flex-col gap-3">
+        <div>
+          <p className="text-xs text-white/40 uppercase tracking-widest mb-3">
+            Quick Filters
+          </p>
 
-        {[
-          {
-            label: "All Transactions",
-            count: stats.total,
-            icon: <List className="w-4 h-4" />,
-            active: true,
-          },
-          {
-            label: "Buy Orders",
-            count: stats.buyOrders,
-            icon: <ShoppingCart className="w-4 h-4" />,
-            active: false,
-          },
-          {
-            label: "Sell Orders",
-            count: stats.sellOrders,
-            icon: <Tag className="w-4 h-4" />,
-            active: false,
-          },
-        ].map((item) => (
-          <button
-            key={item.label}
-            className={`flex items-center justify-between px-3 md:px-4 py-2 md:py-3 rounded-xl text-xs md:text-sm transition-colors
-              ${
-                item.active
-                  ? "bg-primary/20 border border-primary/30 text-primary"
-                  : "hover:bg-white/5 text-white/60 hover:text-white"
-              }`}
-          >
-            <div className="flex items-center gap-2 min-w-0">
-              {item.icon}
-              <span className="truncate">{item.label}</span>
-            </div>
-            <span
-              className={`text-xs font-medium ml-2 shrink-0 ${item.active ? "text-primary" : "text-white/30"}`}
-            >
-              {item.count}
-            </span>
-          </button>
-        ))}
+          {/* Status Filters */}
+          <div className="grid grid-cols-3 gap-2 mb-3">
+            {[
+              {
+                id: "completed" as FilterType,
+                label: "Completed",
+                icon: "✓",
+                color: "green",
+              },
+              {
+                id: "pending" as FilterType,
+                label: "Pending",
+                icon: "⏳",
+                color: "yellow",
+              },
+              {
+                id: "failed" as FilterType,
+                label: "Failed",
+                icon: "✕",
+                color: "red",
+              },
+            ].map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => handleFilterClick(filter.id)}
+                className={`px-2 py-2 rounded-lg text-xs font-medium transition-colors whitespace-nowrap
+                  ${
+                    activeFilter === filter.id
+                      ? `bg-${filter.color}-500/20 border border-${filter.color}-500/40 text-${filter.color}-400`
+                      : "bg-white/5 border border-white/10 text-white/60 hover:text-white"
+                  }`}
+              >
+                <span className="mr-1">{filter.icon}</span>
+                {filter.label}
+              </button>
+            ))}
+          </div>
 
-        <div className="border-t border-white/10 mt-auto pt-4">
-          <p className="text-[10px] text-white/30 uppercase tracking-widest mb-1">
+          {/* Performance Filters */}
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              {
+                id: "all" as FilterType,
+                label: "All",
+                icon: <List className="w-3 h-3" />,
+              },
+            ].map((filter) => (
+              <button
+                key={filter.id}
+                onClick={() => handleFilterClick(filter.id)}
+                className={`flex items-center justify-center gap-1.5 px-2 py-2 rounded-lg text-xs font-medium transition-colors
+                  ${
+                    activeFilter === filter.id
+                      ? "bg-primary/20 border border-primary/30 text-primary"
+                      : "bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                  }`}
+              >
+                {filter.icon}
+                <span className="hidden sm:inline">{filter.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t border-white/10 pt-3 mt-auto">
+          <p className="text-[10px] text-white/30 uppercase tracking-widest mb-2">
             Network Status
           </p>
           <div className="flex items-center justify-between">

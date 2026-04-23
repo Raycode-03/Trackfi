@@ -60,7 +60,8 @@ export function useGsapFadeRight(options: AnimationOptions = {}) {
     const animation = { opacity: 0, x: 60 };
     const target = {
       opacity: 1,
-      x: 0,
+      x: window.innerWidth < 768 ? 0 : 60,
+      y: window.innerWidth < 768 ? 40 : 0,
       duration,
       delay,
       ease: 'power3.out',
@@ -95,7 +96,8 @@ export function useGsapFadeLeft(options: AnimationOptions = {}) {
     const animation = { opacity: 0, x: -60 };
     const target = {
       opacity: 1,
-      x: 0,
+      x: window.innerWidth < 768 ? 0 : -60,  // no X on mobile
+      y: window.innerWidth < 768 ? 40 : 0,
       duration,
       delay,
       ease: 'power3.out',

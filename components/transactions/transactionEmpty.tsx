@@ -1,10 +1,5 @@
 "use client";
-import {
-  Zap,
-  Upload,
-  ScrollText,
-  PlusCircle,
-} from "lucide-react";
+import { Zap, Upload, ScrollText, PlusCircle } from "lucide-react";
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -40,7 +35,7 @@ function TransactionEmpty() {
     totalVolumeSold: 0,
     boughtChange: 0,
     soldChange: 0,
-    networkStatus: "Connected",
+    networkStatus: "Not Connected",
   };
 
   return (
@@ -50,6 +45,7 @@ function TransactionEmpty() {
           stats={stats}
           period={period}
           onPeriodChange={setPeriod}
+          onFilterChange={() => {}}
         />
 
         <div className="bg-white/5 border border-white/10 rounded-2xl p-12 flex flex-col items-center justify-center text-center">
@@ -68,7 +64,7 @@ function TransactionEmpty() {
             </Button>
           </Link>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8 w-full max-w-md">
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-6 mt-8 w-full max-w-md">
             {Actionicons.map((item) => (
               <Link key={item.label} href={item.href}>
                 <div

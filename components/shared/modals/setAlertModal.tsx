@@ -2,24 +2,33 @@
 import React, { useState } from "react";
 import { X, Bell } from "lucide-react";
 import { AlertCondition } from "@/types";
-
+import { formatCrypto } from "@/lib/helpers/formatPrice";
 interface SetAlertModalProps {
   coinSymbol: string;
+  coinPrice: number;
   onClose: () => void;
   onCreate: (type: AlertCondition, value: number) => void;
 }
 
 export function SetAlertModal({
   coinSymbol,
+  coinPrice,
   onClose,
   onCreate,
 }: SetAlertModalProps) {
   const [alertType, setAlertType] = useState<AlertCondition>("above");
   const [value, setValue] = useState("");
+  const [error, setError] = useState("");
+
   const handleCreate = () => {
-    if (!value) return;
-    onCreate(alertType, parseFloat(value));
-    setValue("")  ;
+    const num = parseFloat(value);
+    if (!value || isNaN(num) || num <= 0) {
+      setError("Please enter a value greater than 0");
+      return;
+    }
+    setError("");
+    onCreate(alertType, num);
+    setValue("");
     onClose();
   };
 
@@ -105,11 +114,14 @@ export function SetAlertModal({
               type="number"
               value={value}
               onChange={(e) => setValue(e.target.value)}
-              placeholder={alertType === "change" ? "5" : "65000"}
+              placeholder={
+                alertType === "change" ? "5" : `${formatCrypto(coinPrice)}`
+              }
               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2.5 text-white placeholder-white/20
                 focus:outline-none focus:border-primary/40 focus:bg-white/10 transition-colors
                 pl-6"
             />
+            {error && <p className="text-red-400 text-xs mt-1">{error}</p>}
             {alertType === "change" && (
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40">
                 %
