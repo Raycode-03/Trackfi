@@ -55,7 +55,6 @@ export async function POST(request: NextRequest) {
         provider,
         wallet_address: credentials,
         status: "connected",
-        is_primary: false,
       })
       .select("*")
       .single();

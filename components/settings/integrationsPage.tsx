@@ -19,6 +19,7 @@ export default function IntegrationsPage() {
   const { data: integrations, isLoading } = useIntegrations();
   const [syncing, setSyncing] = useState<string | null>(null);
   const [disconnecting, setDisconnecting] = useState<string | null>(null);
+  const [settingPrimary, setSettingPrimary] = useState<string | null>(null);
 
   const integrationsData: Integration[] = integrations || defaultIntegrations;
 
@@ -27,9 +28,13 @@ export default function IntegrationsPage() {
     setSyncing(id);
     try {
       await syncIntegration(id);
-      toast.success("Sync completed successfully");
+      toast.success(
+        "Sync started successfully! Your transactions will update shortly.",
+      );
     } catch (error) {
-      toast.error("Failed to sync integration");
+      const message =
+        error instanceof Error ? error.message : "Failed to sync integration";
+      toast.error(message);
       console.error("Sync error:", error);
     } finally {
       setSyncing(null);

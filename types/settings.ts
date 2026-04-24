@@ -1,7 +1,6 @@
 export type NotificationChannel = "email" | "push" | "sms";
 export type CurrencyPreference = "USD" | "EUR" | "GBP" | "JPY" | "AUD";
 export type IntegrationProvider =
-  | "coinbase"
   | "binance"
   | "metamask"
   | "trustwallet";
@@ -36,7 +35,7 @@ export interface SecuritySettings {
   loginAlerts: boolean;
   ipWhitelist: boolean;
   whitelistedIPs: string[];
-  sessionTimeout: number; // in minutes
+  sessionTimeout: number;
 }
 
 export interface Integration {
@@ -49,7 +48,6 @@ export interface Integration {
   description: string
   icon?: string
   walletAddress?: string | null
-  isPrimary?: boolean
 }
 export interface AppSettings {
   profile: UserProfile;

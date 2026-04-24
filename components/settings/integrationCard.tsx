@@ -29,6 +29,7 @@ export function IntegrationCard({
   onDisconnect,
   isSyncing,
   isDisconnecting,
+  
 }: IntegrationCardProps) {
   const [showAddressInput, setShowAddressInput] = useState(false);
   const [address, setAddress] = useState("");
@@ -159,11 +160,7 @@ export function IntegrationCard({
               ? new Date(integration.lastSyncedAt).toLocaleDateString()
               : "Never"}
           </p>
-          {integration.isPrimary && (
-            <p>
-              <span className="text-green-400">✓ Primary integration</span>
-            </p>
-          )}
+        
         </div>
       )}
 
@@ -228,10 +225,11 @@ export function IntegrationCard({
             <Button
               onClick={onDisconnect}
               disabled={isDisconnecting}
-              className="px-4 py-2 text-red-400 hover:text-red-300 disabled:text-red-400/50 transition-colors"
+              title  = "disconnect integration"
+              className="bg-white/10 px-4 py-2 text-red-400 hover:text-red-300 disabled:text-red-400/50 transition-colors"
             >
               <Trash2
-                className={`w-4 h-4 ${isDisconnecting ? "animate-spin" : ""}`}
+                className={`w-4 h-4 ${isDisconnecting ? "animate-pulse" : ""}`}
               />
             </Button>
           </>

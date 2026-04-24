@@ -87,13 +87,10 @@ export async function disconnectIntegration(integrationId: string) {
 }
 
 export async function syncIntegration(integrationId: string) {
-  // TODO: wire to /api/settings/integrations/[id]/sync when backend is ready
-  console.warn("syncIntegration: not implemented", integrationId);
-  return null;
-}
-
-export async function setPrimaryIntegration(integrationId: string) {
-  // TODO: wire to /api/settings/integrations/[id]/primary when backend is ready
-  console.warn("setPrimaryIntegration: not implemented", integrationId);
-  return null;
+  const res = await fetch(`/api/settings/integrations/sync/${integrationId}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+  });
+  if (!res.ok) throw new Error("Failed to sync integration");
+  return res.json();
 }
