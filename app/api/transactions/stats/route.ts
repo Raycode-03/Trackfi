@@ -15,12 +15,15 @@
     const { searchParams } = new URL(req.url);
     const period = searchParams.get("period") ?? "30";
     const CACHE_KEY = `transaction:stats:${user.id}:${period}`;
-
-    const cached = await redis.get(CACHE_KEY);
+    try{
+      const cached = await redis.get(CACHE_KEY);
     if (cached) {
       console.log("Stats cache hit");
       return NextResponse.json(JSON.parse(cached));
       }
+    }
+    catch{}
+    
 
     
     const fromDate = period !== "all"
@@ -85,8 +88,10 @@
       soldChange: 0,
       networkStatus: "Operational",
     };
-
-    await redis.set(CACHE_KEY, JSON.stringify(result), "EX", CACHE_TTL);
+    try{
+      await redis.set(CACHE_KEY, JSON.stringify(result), "EX", CACHE_TTL);
+    }catch{}
+    
 
     return NextResponse.json(result);
   }

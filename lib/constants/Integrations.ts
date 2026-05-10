@@ -37,4 +37,4 @@ export const defaultIntegrations: Integration[] = [
     icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png",
     walletAddress: null,
   },
-];
+]

@@ -111,7 +111,11 @@ export async function GET(req: Request) {
         hasAlert: true,
       }));
 
-      await redis.set(CACHE_KEY, JSON.stringify(markets), "EX", CACHE_TTL);
+      try {
+        await redis.set(CACHE_KEY, JSON.stringify(markets), "EX", CACHE_TTL);
+      } catch (redisErr) {
+        console.error("⚠️  Redis SET error:", redisErr);
+      }
       marketMap = new Map(markets.map((c) => [c.id, c]));
     }
 
