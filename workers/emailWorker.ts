@@ -1,19 +1,14 @@
 import { Worker } from "bullmq";
-import Redis from "ioredis";
 import { Resend } from "resend";
+import { validateEmailWorkerEnv } from "./utils/env-guards";
+import { getRedisConnection } from "./utils/redis";
+validateEmailWorkerEnv();
+const connection = getRedisConnection();
 
-if (!process.env.REDIS_URL) {
-  throw new Error("REDIS_URL is required");
-}
-
-if (!process.env.RESEND_API_KEY) {
-  throw new Error("RESEND_API_KEY is required");
-}
-
-const connection = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  tls: {},
-});
+// const connection = new Redis(process.env.REDIS_URL, {
+//   maxRetriesPerRequest: null,
+//   tls: {},
+// });
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 

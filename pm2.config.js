@@ -7,9 +7,9 @@ module.exports = {
       args: "start",
     },
     {
-      name: "email-worker",
-      script: "workers/emailWorker.ts",
+      name: "workers",
+      script: "workers/index.ts",
       interpreter: "tsx",
-    }
-  ]
+    },
+  ],
 };

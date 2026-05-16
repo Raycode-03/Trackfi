@@ -1,16 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
 import { fetchMarketlist, fetchCoinDetail, fetchCoinChart } from "../api/index";
 import { TimeRange } from "@/types/markets";
-
-export const useMarkets = (page = 1, search = "") =>
-  useQuery({
+import { getStaleTime } from "../helpers/cacheTTL";
+import { usePlan } from "../helpers/usePlan";
+export const useMarkets = (page = 1, search = "") =>{
+  const plan = usePlan()
+  return useQuery({
     queryKey: ["marketlist", page, search],
     queryFn: () => fetchMarketlist(page, search),
-    refetchInterval: 30000,
-    staleTime: 1000 * 60 * 5,
+    staleTime:getStaleTime("market",  plan),
     placeholderData: (prev) => prev, 
   });
-
+}
 export const useCoinDetail = (id: string) =>
   useQuery({
     queryKey: ["coin-detail", id],

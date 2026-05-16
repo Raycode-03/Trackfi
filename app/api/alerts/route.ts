@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { redis } from "@/lib/redis";
 import { MarketCoin } from "@/types";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
+import { getCacheTTL } from "@/lib/helpers/cacheTTL";
 
-const CACHE_TTL = 300;
 
 interface CoinGeckoResponse {
   id: string;
@@ -16,8 +17,17 @@ interface CoinGeckoResponse {
   market_cap: number;
 }
 
+
+
 export async function GET(req: Request) {
   try {
+    // rate limit check
+  const { success } = await applyRateLimit(req);
+
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -29,12 +39,13 @@ export async function GET(req: Request) {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("preferred_currency")
+      .select("preferred_currency, package_type")
       .eq("id", user.id)
       .single();
 
     const currency = (profile?.preferred_currency ?? "USD").toLowerCase();
 
+    const CACHE_TTL = getCacheTTL("alerts", profile?.package_type);
     const { searchParams } = new URL(req.url);
     const limit = searchParams.get("limit")
       ? Number(searchParams.get("limit"))

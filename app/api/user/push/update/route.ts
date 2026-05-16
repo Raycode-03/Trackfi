@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { supabaseAdmin } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 export async function PATCH(req: NextRequest) {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const supabase = supabaseAdmin;
+  const authClient = await createClient();
+  const {
+    data: { user },
+  } = await authClient.auth.getUser();
 
   if (!user) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,6 +24,7 @@ export async function PATCH(req: NextRequest) {
     .eq("user_id", user.id)
     .eq("endpoint", endpoint);
 
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (error)
+    return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }

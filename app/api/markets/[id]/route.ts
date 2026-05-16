@@ -1,10 +1,18 @@
 import { createClient } from "@/utils/supabase/server";
-import { NextRequest } from "next/server";
+import { NextRequest , NextResponse } from "next/server";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> },
 ) {
+    // rate limit check
+  const { success } = await applyRateLimit(req);
+
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
   const { id } = await params;
   const supabase = await createClient();
   const {

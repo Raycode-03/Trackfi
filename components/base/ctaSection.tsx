@@ -24,7 +24,7 @@ export function CTASection() {
               Start tracking your crypto today.
             </h2>
             <p className="text-white text-base mb-8 max-w-md mx-auto">
-              Join thousands of investors who trust Track8 to monitor their
+              Join thousands of investors who trust Trackfi to monitor their
               portfolio 24/7.
             </p>
             <button className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-black text-white font-bold text-sm hover:bg-black/80 transition-colors cursor-pointer">

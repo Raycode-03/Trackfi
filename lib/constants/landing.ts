@@ -31,7 +31,7 @@ export const hero = {
 export const featuresHeading = {
   title: "Everything you need to master your assets.",
   description:
-    "Track8 provides real-time tools and advanced analytics to help you make smarter financial moves.",
+    "Trackfi provides real-time tools and advanced analytics to help you make smarter financial moves.",
 };
 
 export const features = [
@@ -147,13 +147,13 @@ export const testimonials = [
     name: "Marcus Rivera",
     handle: "@mrivera",
     rating: 5,
-    text: "Our wealth management improved dramatically after switching to Track8. A brilliant product — our portfolio is actually tracked properly now.",
+    text: "Our wealth management improved dramatically after switching to Trackfi. A brilliant product — our portfolio is actually tracked properly now.",
   },
   {
     name: "Priya Nair",
     handle: "@priyanair",
     rating: 5,
-    text: "The price alert system alone is worth every penny. I haven't missed a single major price movement since I started using Track8.",
+    text: "The price alert system alone is worth every penny. I haven't missed a single major price movement since I started using Trackfi.",
   },
   {
     name: "James Okafor",
@@ -171,7 +171,7 @@ export const testimonials = [
     name: "Daniel Park",
     handle: "@dpark_inv",
     rating: 5,
-    text: "I was skeptical at first but after one week I cancelled every other tracker I was paying for. Track8 does it all and does it better.",
+    text: "I was skeptical at first but after one week I cancelled every other tracker I was paying for. Trackfi does it all and does it better.",
   },
   {
     name: "Fatima Al-Rashid",
@@ -183,13 +183,13 @@ export const testimonials = [
     name: "Tom Eriksson",
     handle: "@tomcrypto",
     rating: 5,
-    text: "Track8's uptime is phenomenal. I've never once experienced downtime during a volatile market session — exactly when reliability matters most.",
+    text: "Trackfi's uptime is phenomenal. I've never once experienced downtime during a volatile market session — exactly when reliability matters most.",
   },
   {
     name: "Yuki Tanaka",
     handle: "@yukitanaka",
     rating: 5,
-    text: "As someone managing a portfolio across 30+ assets, Track8 is a lifesaver. The P&L breakdowns are detailed without being overwhelming.",
+    text: "As someone managing a portfolio across 30+ assets, Trackfi is a lifesaver. The P&L breakdowns are detailed without being overwhelming.",
   },
 ];
 
@@ -251,7 +251,7 @@ export const faqs = [
   {
     question: "Is it free to use?",
     answer:
-      "Yes, Track8 has a free tier that gives you access to core features including basic portfolio tracking and up to 5 price alerts.",
+      "Yes, Trackfi has a free tier that gives you access to core features including basic portfolio tracking and up to 5 price alerts.",
   },
   {
     question: "What exchanges are supported?",
@@ -279,15 +279,15 @@ export const faqs = [
 export const cta = {
   heading: "Start tracking your crypto today.",
   description:
-    "Join thousands of investors who trust Track8 to monitor their portfolio 24/7.",
+    "Join thousands of investors who trust Trackfi to monitor their portfolio 24/7.",
   button: "Get Started Free",
 };
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
 export const footer = {
-  brand: "Track8",
+  brand: "Trackfi",
   tagline: "The ultimate crypto portfolio tracker for modern investors.",
-  copyright: `© ${thisYear} Track8. All rights reserved.`,
+  copyright: `© ${thisYear} Trackfi. All rights reserved.`,
   taglineBottom: "Built for the financial future.",
   socials: ["X", "in", "gh"],
 };

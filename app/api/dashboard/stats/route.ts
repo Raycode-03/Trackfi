@@ -1,11 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { redis } from "@/lib/redis";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
+import { getCacheTTL } from "@/lib/helpers/cacheTTL";
 
-const CACHE_TTL = 60;
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+      // rate limit check
+  const { success } = await applyRateLimit(req);
+
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -16,12 +24,12 @@ export async function GET() {
 
     const { data: profile } = await supabase
       .from("profiles")
-      .select("preferred_currency")
+      .select("preferred_currency, package_type")
       .eq("id", user.id)
       .single();
 
     const currency = (profile?.preferred_currency ?? "USD").toLowerCase();
-
+    const CACHE_TTL = getCacheTTL("alerts", profile?.package_type);
     const [{ data: alerts }, { data: transactions }, { data: holdings }] =
       await Promise.all([
         supabase

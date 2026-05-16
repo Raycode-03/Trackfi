@@ -40,7 +40,7 @@ export function FooterSection() {
         <div className="grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
           {/* Brand */}
           <div ref={brandRef} className="col-span-2 md:col-span-1">
-            <p className="text-white font-black text-xl mb-3">Track8</p>
+            <p className="text-white font-black text-xl mb-3">Trackfi</p>
             <p className="text-white/30 text-xs leading-relaxed mb-4">
               The ultimate crypto portfolio tracker for modern investors.
             </p>
@@ -85,7 +85,7 @@ export function FooterSection() {
 
         <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-white/20 text-xs">
-            © 2025 Track8. All rights reserved.
+            © 2025 Trackfi. All rights reserved.
           </p>
           <p className="text-white/20 text-xs">
             Built for the financial future.

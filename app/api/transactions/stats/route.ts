@@ -1,17 +1,27 @@
   import { NextResponse } from "next/server";
   import { createClient } from "@/utils/supabase/server";
   import { redis } from "@/lib/redis";
+  import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
+  import { getCacheTTL } from "@/lib/helpers/cacheTTL";
 
-  const CACHE_TTL = 120;
 
   export async function GET(req: Request) {
+      // rate limit check
+  const { success } = await applyRateLimit(req);
+
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
     const supabase = await createClient();
 
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    const {data: profile } = await supabase.from("profiles").select("package_type").eq("id", user.id)
+      .single();
+    const CACHE_TTL = getCacheTTL("transactions", profile?.package_type);
     const { searchParams } = new URL(req.url);
     const period = searchParams.get("period") ?? "30";
     const CACHE_KEY = `transaction:stats:${user.id}:${period}`;

@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { resetPasswordSchema } from "@/lib/validations/auth_validation";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
+
 export async function POST(req: NextRequest) {
   try {
+    // rate limit check
+    const { success } = await applyRateLimit(req, true);
+    if (!success) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const body = await req.json();
 
     const parsed = resetPasswordSchema.safeParse(body);

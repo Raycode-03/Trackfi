@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
 import { v2 as cloudinary } from "cloudinary";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -12,6 +13,13 @@ cloudinary.config({
 
 export async function PUT(req: Request) {
   try {
+    // rate limit check
+      const { success } = await applyRateLimit(req);
+    
+      if (!success) {
+        return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+      }
+    
     // Get user from session
     const supabase = await createClient();
     const {
@@ -20,7 +28,7 @@ export async function PUT(req: Request) {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    
     const { image } = await req.json();
     console.log("Received image data:", image ? "Yes" : "No");
     // Validate image

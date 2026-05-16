@@ -1,8 +1,9 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { redis } from "@/lib/redis";
 import { createClient } from "@/utils/supabase/server";
+import { applyRateLimit } from "@/lib/helpers/applyRateLimit";
+import { getCacheTTL } from "@/lib/helpers/cacheTTL";
 
-const CACHE_TTL = 120;
 
 interface FearGreedResponse {
   data: {
@@ -11,8 +12,15 @@ interface FearGreedResponse {
   }[];
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
+      // rate limit check
+  const { success } = await applyRateLimit(req);
+
+  if (!success) {
+    return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+  }
+
     const supabase = await createClient();
     const {
       data: { user },
@@ -21,7 +29,12 @@ export async function GET() {
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("package_type")
+      .eq("id", user.id)
+      .single();
+    const CACHE_TTL = getCacheTTL("alerts", profile?.package_type);
     const CACHE_KEY = `watchlist:stats:${user.id}`;
 
     try {

@@ -1,18 +1,21 @@
 import { useQuery } from '@tanstack/react-query'
 import { fetchWatchlist , fetchWatchlistStats } from '../api/index'
-
-export const useWatchlist = (page = 1) =>
-  useQuery({
+import { getStaleTime } from '../helpers/cacheTTL';
+import { usePlan } from '../helpers/usePlan';
+export const useWatchlist = (page = 1) =>{
+  const plan = usePlan()
+  return useQuery({
     queryKey: ["watchlist", page],
     queryFn: () => fetchWatchlist(page),
-    refetchInterval: 30000,
-    staleTime: 1000 * 60 * 5,
+    staleTime: getStaleTime("watchlist",  plan),
     placeholderData: (prev) => prev,
+  })
+}
+export const useWatchlistStats = () => {
+  const plan = usePlan()
+ return useQuery({
+    queryKey: ['watchlist-stats'],
+    queryFn: fetchWatchlistStats,
+    staleTime: getStaleTime("watchlist",  plan),
   });
-export const useWatchlistStats = () =>
-    useQuery({
-        queryKey: ['watchlist-stats'],
-        queryFn: fetchWatchlistStats,
-        refetchInterval: 30000,
-        staleTime: 1000 * 60 * 5,
-    })
+}

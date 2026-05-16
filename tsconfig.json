@@ -22,6 +22,6 @@
       "@/*": ["./*", "./lib/*","./app/*", "./components/*", "./api/auth*" , "./utils/*" ,"./context/*" ,  "./hooks/*"],
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts",  "**/*.tsx", ".next/types/**/*.ts", "workers/emailWorker.js"],
+  "include": ["next-env.d.ts", "**/*.ts",  "**/*.tsx", ".next/types/**/*.ts", "workers/emailWorker.ts"],
   "exclude": ["node_modules"]
 }
