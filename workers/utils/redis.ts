@@ -7,10 +7,3 @@ export const createRedisConnection = (url: string) => {
     tls: {},
   });
 };
-
-export const getRedisConnection = () => {
-  if (!process.env.REDIS_URL) {
-    throw new Error("REDIS_URL is required");
-  }
-  return createRedisConnection(process.env.REDIS_URL);
-};

@@ -47,11 +47,6 @@ export interface TransactionRow {
   tx_hash: string;
 }
 
-
-// interface ChainMeta {
-//   coin_id: string;
-//   symbol: string;
-// }
 export interface EvmChainMeta {
   moralisChain: string;
   coin_id: string;

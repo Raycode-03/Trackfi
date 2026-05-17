@@ -1,5 +1,5 @@
+
 import { Worker } from "bullmq";
-import Redis from "ioredis";
 import { createClient } from "@supabase/supabase-js";
 import {
   TransactionRow,
@@ -7,6 +7,8 @@ import {
 } from "./types/transactions";
 import { fetchEvm, fetchBtc, fetchSol } from "./helpers/transactionFetcher";
 import {mapBtcTx , mapSolTx , mapEvmTx} from "./helpers/transactions"
+import { createRedisConnection } from './utils/redis';
+
 // ─── Env Guards ───────────────────────────────────────────────
 if (!process.env.REDIS_URL) throw new Error("REDIS_URL is required");
 if (!process.env.MORALIS_API_KEY)
@@ -18,10 +20,8 @@ if (
 )
   throw new Error("Supabase credentials are required");
 
-const connection = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  tls: {},
-});
+const connection = createRedisConnection(process.env.REDIS_URL);
+
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -40,13 +40,6 @@ const EVM_CHAIN_META: Record<string, EvmChainMeta> = {
   arbitrum: { moralisChain: "arbitrum", coin_id: "ethereum", symbol: "ETH" },
 };
 
-// const CHAIN_META: Record<string, ChainMeta> = {
-//   bitcoin: { coin_id: "bitcoin", symbol: "BTC" },
-//   solana:  { coin_id: "solana",  symbol: "SOL" },
-//   ...Object.fromEntries(
-//     Object.entries(EVM_CHAIN_META).map(([k, v]) => [k, { coin_id: v.coin_id, symbol: v.symbol }])
-//   ),
-// };
 
 
 // ─── Worker ───────────────────────────────────────────────────

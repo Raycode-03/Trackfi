@@ -1,21 +1,9 @@
-// alertsWorker.js
 import { Queue, Worker } from "bullmq";
-import Redis from "ioredis";
 import { createClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
 import webpush from "web-push";
-
-export interface MarketCoin {
-  id: string;
-  symbol: string;
-  name: string;
-  image?: string;
-  current_price: number;
-  price_change_percentage_24h: number;
-  price_change_percentage_7d: number;
-  market_cap: number;
-  sparkline: number[];
-}
+import {MarketCoin} from "./types/alerts"
+import { createRedisConnection } from './utils/redis';
 
 if (!process.env.REDIS_URL) throw new Error("REDIS_URL is required");
 if (!process.env.MORALIS_API_KEY)
@@ -40,10 +28,7 @@ webpush.setVapidDetails(
   process.env.VAPID_PUBLIC_KEY,
   process.env.VAPID_PRIVATE_KEY,
 );
-const connection = new Redis(process.env.REDIS_URL, {
-  maxRetriesPerRequest: null,
-  tls: {},
-});
+const connection = createRedisConnection(process.env.REDIS_URL);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
